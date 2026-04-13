@@ -1,3 +1,4 @@
+!(import! &self "helpers.py")
 ;; An implementation of the Motivation Representation which will represent the state
 ;; of the metamo agent
 
@@ -47,9 +48,21 @@
     )
 )
 
+(= (motivationStateDiff $motivState $motivState2)
+    (let* (
+        ($motivState (motivation $goals $modulators))
+        ($motivState2 (motivation $goals2 $modulators2))
+        ($goalDiff  (py-call (helpers.calculate_norm_difference $goals $goals2)))
+        ($motivDiff (py-call (helpers.calculate_norm_difference $modulators $modulators2)))
+    )
+        (+ $goalDiff $motivDiff)
+    )
+
+)
+
 !(validateMotivationState (motivation (0.3 0.2 0.1 0.3) (0.4 0.6 0.7 0.8 0.9)) 4 5)
 
-
+!(motivationStateDiff (motivation (0.3 0.2 0.1 0.3) (0.4 0.6 0.7 0.8 0.9)) (motivation (0.3 0.2 0.1 0.6) (0.4 0.6 0.7 0.8 0.4)) )
 
 
 
