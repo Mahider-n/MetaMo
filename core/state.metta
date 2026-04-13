@@ -53,9 +53,11 @@
         ($motivState (motivation $goals $modulators))
         ($motivState2 (motivation $goals2 $modulators2))
         ($goalDiff  (py-call (helpers.calculate_norm_difference $goals $goals2)))
+      
         ($motivDiff (py-call (helpers.calculate_norm_difference $modulators $modulators2)))
+        
     )
-        (+ $goalDiff $motivDiff)
+        (py-call (round (+ $goalDiff $motivDiff) 2))
     )
 
 )
