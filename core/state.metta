@@ -17,17 +17,37 @@
 
 
 (= (validateMotivationState $motivation $numGoals $numModulators)
-    (let* (
-        ((motivation $goals $modulators) $motivation)
-        ($goalsLen (size-atom $goals))
-        ($modsLen (size-atom $modulators))
+    (let $motivation (motivation $goals $modulators)
+            (let* (
+                
+                ($goalsLen (size-atom $goals))
+                ($modsLen (size-atom $modulators))
+            )
+                (if (and (== $goalsLen $numGoals) (== $modsLen $numModulators))
+                    True
+                    False
+                )
+            )
+       
     )
-        (if (and (== $goalsLen $numGoals) (== $modsLen $numModulators))
-            True
-            False
+)
+
+(= (validateActionState $action $numGoals)
+    (let $action (action $actionId $goalCorrelations $risk_estimate $delta)
+        (let* (
+            ($goalsLen (size-atom $goalCorrelations))
+            ($deltaLen (size-atom $delta))
+
         )
+            (if (and (== $goalsLen $numGoals) ($deltaLen $numGoals))
+                True
+                False
+            )
+        )
+    )
 )
-)
+
+!(validateMotivationState (motivation (0.3 0.2 0.1 0.3) (0.4 0.6 0.7 0.8 0.9)) 4 5)
 
 
 
