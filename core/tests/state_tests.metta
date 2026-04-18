@@ -4,6 +4,8 @@
 ;;; Covers: Type constructors, validateMotivationState,
 ;;;         validateActionState, motivationStateDiff
 ;;; ============================================================
+
+!(import! &self ../helper)
 !(import! &self "../helpers.py")
 !(import! &self ../state)
 

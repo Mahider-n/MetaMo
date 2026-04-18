@@ -40,7 +40,7 @@
             ($deltaLen (size-atom $delta))
 
         )
-            (if (and (== $goalsLen $numGoals) ($deltaLen $numGoals))
+            (if (and (== $goalsLen $numGoals) (== $deltaLen $numGoals))
                 True
                 False
             )
@@ -52,16 +52,16 @@
     (let* (
         ($motivState (motivation $goals $modulators))
         ($motivState2 (motivation $goals2 $modulators2))
-        ($goalDiff  (py-call (helpers.calculate_norm_difference $goals $goals2)))
-      
-        ($motivDiff (py-call (helpers.calculate_norm_difference $modulators $modulators2)))
-        
-    )
-        (py-call (round (+ $goalDiff $motivDiff) 2))
-    )
 
+        ($goalDiff (calculateNormDifference $goals $goals2))
+        ($motivDiff (calculateNormDifference $modulators $modulators2))
+
+        ($totalDiff (+ $goalDiff $motivDiff))
+    )
+        (roundNum $totalDiff 2)
+    )
 )
-
+ 
 !(validateMotivationState (motivation (0.3 0.2 0.1 0.3) (0.4 0.6 0.7 0.8 0.9)) 4 5)
 
 !(motivationStateDiff (motivation (0.3 0.2 0.1 0.3) (0.4 0.6 0.7 0.8 0.9)) (motivation (0.3 0.2 0.1 0.6) (0.4 0.6 0.7 0.8 0.4)) )

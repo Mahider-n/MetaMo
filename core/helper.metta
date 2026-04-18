@@ -1,0 +1,51 @@
+ 
+
+(= (listDifference $arr1 $arr2)
+    (py-call (helpers.list_difference $arr1 $arr2))
+)
+(= (norm $arr)
+    (py-call (helpers.norm $arr))
+)
+(= (calculateNormDifference $arr1 $arr2)
+    (py-call (helpers.calculate_norm_difference $arr1 $arr2))
+)
+
+(= (cosineSimilarity $arr1 $arr2)
+    (py-call (helpers.cosine_similarity $arr1 $arr2))
+)
+
+(= (normalizeVector $arr)
+    (py-call (helpers.normalize_vector $arr))
+)
+(= (roundNum $value $digits)
+    (py-call (helpers.round_number $value $digits))
+)
+
+(= (split $arr $indices_or_sections)
+    (py-call (helpers.split $arr $indices_or_sections))
+)
+(= (sum $arr)
+    (py-call (helpers.sum_array $arr))
+)
+(= (product $arr)
+    (py-call (helpers.prod_array $arr ))
+)
+(= (mean $arr)
+    (py-call (helpers.mean_array $arr))
+)
+(= (std $arr)
+    (py-call (helpers.std_array $arr))
+)
+
+(= (variance $arr)
+    (py-call (helpers.var_array $arr))
+)
+
+(= (dotProduct $arr1 $arr2)
+    (py-call (helpers.dot_array $arr1 $arr2))
+)
+
+;--- additional helper function ---
+(= (softmax $arr)
+    (py-call (helpers.softmax $arr))
+)
