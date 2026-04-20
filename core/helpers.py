@@ -22,21 +22,6 @@ def calculate_norm_difference(arr1, arr2):
     return round(float(np.sum(np.square(a - b))), 2)
 
 
-def cosine_similarity(arr1, arr2):
-    a = np.asarray(arr1, dtype=float)
-    b = np.asarray(arr2, dtype=float) 
-
-    if a.shape != b.shape:
-        raise ValueError("arr1 and arr2 must have the same shape")
-    norm_a = np.linalg.norm(a)
-    norm_b = np.linalg.norm(b)
-    
-    if norm_a == 0 or norm_b == 0:
-        return 0.0
-    
-    dot_product = np.dot(a, b)
-    return round(float(dot_product / (norm_a * norm_b)), 3)
-
 def normalize_vector(arr):
     a = np.asarray(arr)
     n = np.linalg.norm(a)

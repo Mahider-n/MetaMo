@@ -12,8 +12,7 @@
 !(test (calculateNormDifference (1 2 3) (4 5 6)) 27.0)
 !(test (calculateNormDifference () ()) 0.0)
 
-!(test (cosineSimilarity (1 0) (0 1))0.0)
-!(test (cosineSimilarity () ()) 0.0)
+
 
 !(test (normalizeVector (3 4)) (0.6 0.8))
 (test (normalizeVector ()) ())

@@ -10,9 +10,7 @@
     (py-call (helpers.calculate_norm_difference $arr1 $arr2))
 )
 
-(= (cosineSimilarity $arr1 $arr2)
-    (py-call (helpers.cosine_similarity $arr1 $arr2))
-)
+
 
 (= (normalizeVector $arr)
     (py-call (helpers.normalize_vector $arr))
