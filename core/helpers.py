@@ -13,13 +13,12 @@ def norm(arr):
     return float(np.linalg.norm(arr))
 
 def calculate_norm_difference(arr1, arr2):
-    a = np.asarray(arr1)
-    b = np.asarray(arr2)
+    a = np.asarray(arr1, dtype=float)
+    b = np.asarray(arr2, dtype=float)
 
     if a.shape != b.shape:
         raise ValueError("arr1 and arr2 must have the same shape")
-    
-    return round(float(np.sum(np.square(a - b))), 2)
+    return float(np.sum(np.square(a - b)))
 
 
 def normalize_vector(arr):
