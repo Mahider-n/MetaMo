@@ -6,46 +6,57 @@
 !(import! &self ../../core/config)
 !(import! &self ../functors)
 
+;; Mock extraction function (identity).
 (= (identityExtract $state)
     $state
 )
 
+;; Mock appraisal function that updates modulators.
 (= (simpleAppraise (motivation ($g1 $g2) ($m1 $m2)) (stimulus $novelty $conduciveness $risk $effort))
     (motivation ($g1 $g2) (clipVector (vectorAdd ($m1 $m2) ($novelty $conduciveness)) 0.0 1.0))
 )
 
+;; Mock unit function (identity).
 (= (identityUnit $state)
     $state
 )
 
+;; Mock decision function (constant result).
 (= (constantDecide $state $candidates)
     (decisionResult (action act1 (0.25 0.75) 0.25 (0.125 -0.125)) (0.125 -0.125))
 )
 
+;; Mock scoring function (sum correlation).
 (= (simpleScore $state (action $actionId $goalCorrelations $riskEstimate $deltaG))
     (+ (sum $goalCorrelations) (sum (motivationGoals $state)))
 )
 
+;; Mock damping function (identity).
 (= (identityDamping $state $deltaG)
     $deltaG
 )
 
+;; Mock boundary stabilization (identity).
 (= (identityBoundary $state)
     $state
 )
 
+;; Mock projection function (identity).
 (= (identityProject $state)
     $state
 )
 
+;; Mock contractivity check (always True).
 (= (alwaysContractive $bimonad $state $referenceState $stimulus $candidates)
     True
 )
 
+;; Mock safety region check (always True).
 (= (alwaysSafe $state)
     True
 )
 
+;; Mock appraisal function for high-dimensional states (6 modulators).
 (= (richAppraise (motivation $goals ($m1 $m2 $m3 $m4 $m5 $m6)) (stimulus $novelty $conduciveness $risk $effort))
     (motivation
         $goals
@@ -53,6 +64,7 @@
     )
 )
 
+;; A large, shared motivational state for consensus testing.
 (= (consensusState)
     (motivation
         (0.25 0.75 0.5 0.5 0.5 0.5 0.5 0.5)
@@ -60,6 +72,7 @@
     )
 )
 
+;; A shared candidate set for consensus and decision testing.
 (= (candidateSet)
     (
         (action act1 (0.25 0.25 0.0 0.0 0.0 0.0 0.0 0.0) 0.25 (0.125 0.125 0.0 0.0 0.0 0.0 0.0 0.0))
@@ -67,11 +80,13 @@
     )
 )
 
+;; Verify the consensus scoring formula: average - 0.25 * absolute difference.
 !(test
     (candidateConsensusScore 4.0 2.0)
     2.5
 )
 
+;; Ensure decisionContext correctly integrates appraisal and identity boundary.
 !(test
     (decisionContext
         (metaMoPseudoBimonad
@@ -89,6 +104,7 @@
     (motivation (0.25 0.75) (0.25 0.375))
 )
 
+;; Verify that computeTransition produces the expected final state after appraisal and decision.
 !(test
     (transitionState
         (computeTransition
@@ -109,6 +125,7 @@
     (motivation (0.375 0.625) (0.25 0.375))
 )
 
+;; Validate the conservative fallback mechanism (averaging current and proposed states).
 !(test
     (applyConservativeFallback
         (motivation (0.25 0.75) (0.125 0.25))
@@ -117,6 +134,7 @@
     (motivation (0.5 0.5) (0.375 0.5))
 )
 
+;; Test consensus action selection when evaluating candidates from two identical states.
 !(test
     (consensusAction
         (metaMoPseudoBimonad
@@ -136,6 +154,7 @@
     (action act2 (0.5 0.75 0.0 0.0 0.0 0.0 0.0 0.0) 0.25 (-0.125 0.125 0.0 0.0 0.0 0.0 0.0 0.0))
 )
 
+;; Ensure a complete consensus transition correctly merges states for high-dimensional motivations.
 !(test
     (transitionState
         (consensusTransitionDefault
