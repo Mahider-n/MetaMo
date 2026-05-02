@@ -1,18 +1,30 @@
 
 
+;; Creates an OpenPSI appraisal comonad using a custom appraisal function.
+;; Example: (openPsiAppraisalWith customAppraiseFn)
 (= (openPsiAppraisalWith $appraiseFn)
     (appraisalComonad openPsiExtract $appraiseFn)
 )
 
+;; Creates a default OpenPSI appraisal comonad using the standard openPsiAppraise function.
+;; Example: (openPsiAppraisal)
 (= (openPsiAppraisal)
     (openPsiAppraisalWith openPsiAppraise)
 )
 
+;; Extracts the current motivation state from the comonad.
+;; Example: (openPsiExtract (motivation (goals) (modulators)))
 (= (openPsiExtract $state)
     $state
 )
 
-;; openPsiAppraise
+;; Performs the core OpenPSI appraisal by updating the motivation state based on a stimulus.
+;; This function calculates new modulator values (valence, arousal, etc.) using the stimulus properties.
+;; Example:
+;;   (openPsiAppraise
+;;     (motivation (0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5) (0.5 0.5 0.5 0.5 0.5 0.5))
+;;     (stimulus 0.2 0.8 0.1 0.2)
+;;   )
 (= (openPsiAppraise
         (motivation
             ($gInd $gTrans $gHelp $gCurio $gNovel $gSelf $gEthic $gSoc)

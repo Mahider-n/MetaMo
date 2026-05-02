@@ -6,6 +6,8 @@
 !(import! &self ../../category/functors)
 !(import! &self ../appraisal_calculation)
 
+;; Helper function to perform appraisal and round the resulting modulator values for comparison in tests.
+;; Example: (roundAppraisedWith (openPsiAppraisal) (motivation (goals) (modulators)) (stimulus 0.1 0.2 0.3 0.4))
 (= (roundAppraisedWith
         $appraisal
         (motivation
@@ -42,6 +44,8 @@
     )
 )
 
+;; Helper function to perform appraisal using the default OpenPSI comonad and round the results.
+;; Example: (roundAppraisedState (motivation (goals) (modulators)) (stimulus 0.1 0.2 0.3 0.4))
 (= (roundAppraisedState $state $stimulus)
     (roundAppraisedWith (openPsiAppraisal) $state $stimulus)
 )
