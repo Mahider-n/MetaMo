@@ -5,6 +5,7 @@
 !(import! &self ../../core/state)
 !(import! &self ../../core/config)
 !(import! &self ../functors)
+!(import! &self ../../openpsi/config)
 
 ;; Mock extraction function (identity).
 (= (identityExtract $state)
@@ -12,8 +13,16 @@
 )
 
 ;; Mock appraisal function that updates modulators.
-(= (simpleAppraise (motivation ($g1 $g2) ($m1 $m2)) (stimulus $novelty $conduciveness $risk $effort))
-    (motivation ($g1 $g2) (clipVector (vectorAdd ($m1 $m2) ($novelty $conduciveness)) 0.0 1.0))
+(= (simpleAppraise $state (stimulus $stimValues))
+    (let* (
+        ($stim0 (index-atom $stimValues 0))
+        ($stim1 (index-atom $stimValues 1))
+    )
+        (motivation
+            (motivationGoals $state)
+            (clipVector (vectorAdd (motivationModulators $state) ($stim0 $stim1)) 0.0 1.0)
+        )
+    )
 )
 
 ;; Mock unit function (identity).
@@ -57,10 +66,16 @@
 )
 
 ;; Mock appraisal function for high-dimensional states (6 modulators).
-(= (richAppraise (motivation $goals ($m1 $m2 $m3 $m4 $m5 $m6)) (stimulus $novelty $conduciveness $risk $effort))
-    (motivation
-        $goals
-        (clipVector (vectorAdd ($m1 $m2 $m3 $m4 $m5 $m6) ($novelty $conduciveness 0.0 0.0 0.0 0.0)) 0.0 1.0)
+;; Adds first two stimulus values to the first two modulators, leaves rest unchanged.
+(= (richAppraise $state (stimulus $stimValues))
+    (let* (
+        ($stim0 (index-atom $stimValues 0))
+        ($stim1 (index-atom $stimValues 1))
+    )
+        (motivation
+            (motivationGoals $state)
+            (clipVector (vectorAdd (motivationModulators $state) ($stim0 $stim1 0.0 0.0 0.0 0.0)) 0.0 1.0)
+        )
     )
 )
 
@@ -99,7 +114,7 @@
             alwaysSafe
         )
         (motivation (0.25 0.75) (0.125 0.25))
-        (stimulus 0.125 0.125 0.0 0.0)
+        (stimulus (0.125 0.125 0.0 0.0))
     )
     (motivation (0.25 0.75) (0.25 0.375))
 )
@@ -118,7 +133,7 @@
                 alwaysSafe
             )
             (motivation (0.25 0.75) (0.125 0.25))
-            (stimulus 0.125 0.125 0.0 0.0)
+            (stimulus (0.125 0.125 0.0 0.0))
             ()
         )
     )
@@ -148,7 +163,7 @@
         )
         (consensusState)
         (consensusState)
-        (stimulus 0.125 0.125 0.0 0.0)
+        (stimulus (0.125 0.125 0.0 0.0))
         (candidateSet)
     )
     (action act2 (0.5 0.75 0.0 0.0 0.0 0.0 0.0 0.0) 0.25 (-0.125 0.125 0.0 0.0 0.0 0.0 0.0 0.0))
@@ -169,7 +184,7 @@
             )
             (consensusState)
             (consensusState)
-            (stimulus 0.125 0.125 0.0 0.0)
+            (stimulus (0.125 0.125 0.0 0.0))
             (candidateSet)
         )
     )

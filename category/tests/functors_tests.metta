@@ -10,8 +10,16 @@
 )
 
 ;; Mock appraisal function that updates modulators based on stimulus.
-(= (simpleAppraise (motivation ($g1 $g2) ($m1 $m2)) (stimulus $novelty $conduciveness $risk $effort))
-    (motivation ($g1 $g2) (clipVector (vectorAdd ($m1 $m2) ($novelty $conduciveness)) 0.0 1.0))
+(= (simpleAppraise $state (stimulus $stimValues))
+    (let* (
+        ($stim0 (index-atom $stimValues 0))
+        ($stim1 (index-atom $stimValues 1))
+    )
+        (motivation
+            (motivationGoals $state)
+            (clipVector (vectorAdd (motivationModulators $state) ($stim0 $stim1)) 0.0 1.0)
+        )
+    )
 )
 
 ;; Mock unit function for the decision monad (identity).
@@ -43,7 +51,7 @@
     (appraise
         (appraisalComonad identityExtract simpleAppraise)
         (motivation (0.25 0.75) (0.125 0.25))
-        (stimulus 0.125 0.125 0.0 0.0)
+        (stimulus (0.125 0.125 0.0 0.0))
     )
     (motivation (0.25 0.75) (0.25 0.375))
 )

@@ -202,7 +202,7 @@
         ($targetA (stateFromDelta $bimonad $contextA (actionDeltaG $action)))
         ($targetB (stateFromDelta $bimonad $contextB (actionDeltaG $action)))
     )
-        (parallelMerge $targetA $targetB $coherenceCorrection)
+        (eval (parallelMerge $targetA $targetB $coherenceCorrection))
     )
 )
 
@@ -223,28 +223,6 @@
     (consensusTransition $bimonad $stateA $stateB $stimulus $candidates 0.05)
 )
 
-;; Combine two proposed states into one by merging their goals and modulators separately.
-;; Example: (parallelMerge stateA stateB 0.05)
-(= (parallelMerge $stateA $stateB $coherenceCorrection)
-    (motivation
-        (eval (clipVector
-            (parallelMergeGoals (motivationGoals $stateA) (motivationGoals $stateB) $coherenceCorrection)
-            0.0
-            1.0
-        ))
-        (eval (clipVector
-            (parallelMergeModulators
-                (motivationModulators $stateA)
-                (motivationModulators $stateB)
-                (motivationGoals $stateA)
-                (motivationGoals $stateB)
-                $coherenceCorrection
-            )
-            0.0
-            1.0
-        ))
-    )
-)
 
 ;; Validates the First Principle: Modular Appraisal-Decision Interface (commutation of paths).
 ;; Example: (checkLaxDistributiveLaw myBimonad currState stimulus (A B))
