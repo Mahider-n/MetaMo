@@ -2,6 +2,7 @@
 !(import! &self ../helper)
 !(import! &self "../helpers.py")
 !(import! &self ../config)
+!(import! &self ../../openpsi/config)
 
 
 !(test
@@ -10,8 +11,8 @@
 )
 
 !(test
-    (stimulus 1 2 3 4)
-    (stimulus 1 2 3 4)
+    (stimulus (1 2 3 4))
+    (stimulus (1 2 3 4))
 )
 
 !(test
@@ -30,8 +31,8 @@
 )
 
 !(test
-    (stimulusRisk (stimulus 1 2 3 4))
-    3
+    (stimulusValues (stimulus (1 2 3 4)))
+    (1 2 3 4)
 )
 
 !(test

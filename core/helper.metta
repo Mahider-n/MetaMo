@@ -84,10 +84,26 @@
     (py-call (helpers.probe_vector $delta $step $threshold))
 )
 
-(= (parallelMergeGoals $goalsA $goalsB $coherenceCorrection)
-    (py-call (helpers.parallel_merge_goals $goalsA $goalsB $coherenceCorrection))
+;; Merge two goal vectors using parameterized index categories
+;; Example: (parallelMergeGoals goalsA goalsB 0.05 0 (0 2 6) (1 3 4 5) (7))
+(= (parallelMergeGoals $goalsA $goalsB $coherenceCorrection $weightIdx $safetyIdx $exploratoryIdx $socialIdx)
+    (py-call (helpers.parallel_merge_goals $goalsA $goalsB $coherenceCorrection $weightIdx $safetyIdx $exploratoryIdx $socialIdx))
 )
 
-(= (parallelMergeModulators $modsA $modsB $goalsA $goalsB $coherenceCorrection)
-    (py-call (helpers.parallel_merge_modulators $modsA $modsB $goalsA $goalsB $coherenceCorrection))
+;; Merge two modulator vectors using parameterized index categories
+;; Example: (parallelMergeModulators modsA modsB goalsA goalsB 0.05 0 (4 5) (1 2) (0 3))
+(= (parallelMergeModulators $modsA $modsB $goalsA $goalsB $coherenceCorrection $weightIdx $cautionIdx $exploratoryIdx $sharedIdx)
+    (py-call (helpers.parallel_merge_modulators $modsA $modsB $goalsA $goalsB $coherenceCorrection $weightIdx $cautionIdx $exploratoryIdx $sharedIdx))
+)
+
+;; Update Atoms in a space
+(= (updateAtom $oatom $natom $space) (let $_ (remove-atom $space $oatom) (add-atom $space $natom)))
+
+(= (getIndex $goals $idx)
+   (index-atom $goals $idx))
+
+;; Round all elements in a list to the given number of decimal places
+;; Example: (roundList (0.12345 0.67891) 3) → (0.123 0.679)
+(= (roundList $arr $digits)
+    (py-call (helpers.round_list $arr $digits))
 )

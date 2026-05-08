@@ -1,7 +1,4 @@
 import numpy as np
-
-G_IND, G_TRANS, G_HELP, G_CURIO, G_NOVEL, G_SELF, G_ETHIC, G_SOC = range(8)
-M_VALENCE, M_AROUSAL, M_APPROACH, M_RESOLUTION, M_THRESHOLD, M_SECURING = range(6)
  
 def list_difference(arr1, arr2):
     a = np.asarray(arr1, dtype=float)
@@ -126,37 +123,45 @@ def weighted_average_arrays(arr1, arr2, weight1, weight2):
 
     return ((a * float(weight1)) + (b * float(weight2))) / total_weight
 
-def parallel_merge_goals(goals_a, goals_b, coherence_correction=0.05):
+def parallel_merge_goals(goals_a, goals_b, coherence_correction,
+                         weight_idx, safety_idx, exploratory_idx, social_idx):
+    """Merge two goal vectors using parameterized index categories."""
     ga = np.asarray(goals_a, dtype=float)
     gb = np.asarray(goals_b, dtype=float)
 
     if ga.shape != gb.shape:
         raise ValueError("goal vectors must have the same shape")
 
-    weight_a = ga[G_IND]
-    weight_b = gb[G_IND]
+    w_idx = int(weight_idx)
+    weight_a = ga[w_idx]
+    weight_b = gb[w_idx]
 
     base_g = weighted_average_arrays(ga, gb, weight_a, weight_b)
     disagreement_g = np.abs(ga - gb)
     consensus_g = base_g.copy()
 
-    safety_goal_idx = np.array([G_IND, G_HELP, G_ETHIC])
-    exploratory_goal_idx = np.array([G_TRANS, G_CURIO, G_NOVEL, G_SELF])
+    safe_idx = np.array([int(i) for i in safety_idx])
+    expl_idx = np.array([int(i) for i in exploratory_idx])
+    soc_idx = np.array([int(i) for i in social_idx])
 
-    consensus_g[safety_goal_idx] = np.maximum(ga[safety_goal_idx], gb[safety_goal_idx])
-    consensus_g[exploratory_goal_idx] = np.minimum(ga[exploratory_goal_idx], gb[exploratory_goal_idx])
-    consensus_g[G_SOC] = min(base_g[G_SOC], ga[G_SOC], gb[G_SOC])
+    consensus_g[safe_idx] = np.maximum(ga[safe_idx], gb[safe_idx])
+    consensus_g[expl_idx] = np.minimum(ga[expl_idx], gb[expl_idx])
+    for si in soc_idx:
+        consensus_g[si] = min(base_g[si], ga[si], gb[si])
 
     goal_correction_scale = np.ones_like(base_g)
-    goal_correction_scale[safety_goal_idx] = 1.5
-    goal_correction_scale[exploratory_goal_idx] = 1.0
-    goal_correction_scale[G_SOC] = 0.8
+    goal_correction_scale[safe_idx] = 1.5
+    goal_correction_scale[expl_idx] = 1.0
+    for si in soc_idx:
+        goal_correction_scale[si] = 0.8
 
     goal_correction = np.clip(coherence_correction * disagreement_g * goal_correction_scale, 0.0, 1.0)
     merged_g = base_g + goal_correction * (consensus_g - base_g)
     return merged_g.tolist()
 
-def parallel_merge_modulators(mod_a, mod_b, goals_a, goals_b, coherence_correction=0.05):
+def parallel_merge_modulators(mod_a, mod_b, goals_a, goals_b, coherence_correction,
+                              weight_idx, caution_idx, exploratory_idx, shared_idx):
+    """Merge two modulator vectors using parameterized index categories."""
     ma = np.asarray(mod_a, dtype=float)
     mb = np.asarray(mod_b, dtype=float)
     ga = np.asarray(goals_a, dtype=float)
@@ -165,25 +170,26 @@ def parallel_merge_modulators(mod_a, mod_b, goals_a, goals_b, coherence_correcti
     if ma.shape != mb.shape:
         raise ValueError("modulator vectors must have the same shape")
 
-    weight_a = ga[G_IND]
-    weight_b = gb[G_IND]
+    w_idx = int(weight_idx)
+    weight_a = ga[w_idx]
+    weight_b = gb[w_idx]
 
     base_m = weighted_average_arrays(ma, mb, weight_a, weight_b)
     disagreement_m = np.abs(ma - mb)
     consensus_m = base_m.copy()
 
-    caution_mod_idx = np.array([M_THRESHOLD, M_SECURING])
-    exploratory_mod_idx = np.array([M_AROUSAL, M_APPROACH])
-    shared_mod_idx = np.array([M_VALENCE, M_RESOLUTION])
+    caut_idx = np.array([int(i) for i in caution_idx])
+    expl_idx = np.array([int(i) for i in exploratory_idx])
+    shar_idx = np.array([int(i) for i in shared_idx])
 
-    consensus_m[caution_mod_idx] = np.maximum(ma[caution_mod_idx], mb[caution_mod_idx])
-    consensus_m[exploratory_mod_idx] = np.minimum(ma[exploratory_mod_idx], mb[exploratory_mod_idx])
-    consensus_m[shared_mod_idx] = (ma[shared_mod_idx] + mb[shared_mod_idx]) / 2.0
+    consensus_m[caut_idx] = np.maximum(ma[caut_idx], mb[caut_idx])
+    consensus_m[expl_idx] = np.minimum(ma[expl_idx], mb[expl_idx])
+    consensus_m[shar_idx] = (ma[shar_idx] + mb[shar_idx]) / 2.0
 
     mod_correction_scale = np.ones_like(base_m)
-    mod_correction_scale[caution_mod_idx] = 1.5
-    mod_correction_scale[exploratory_mod_idx] = 1.0
-    mod_correction_scale[shared_mod_idx] = 0.8
+    mod_correction_scale[caut_idx] = 1.5
+    mod_correction_scale[expl_idx] = 1.0
+    mod_correction_scale[shar_idx] = 0.8
 
     mod_correction = np.clip(coherence_correction * disagreement_m * mod_correction_scale, 0.0, 1.0)
     merged_m = base_m + mod_correction * (consensus_m - base_m)
@@ -201,3 +207,6 @@ def softmax(arr):
 
 def round_number(value, digits=0):
     return round(float(value), digits)
+
+def round_list(arr, digits=0):
+    return [round(float(x), digits) for x in arr]

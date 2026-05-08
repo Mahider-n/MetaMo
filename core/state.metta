@@ -4,7 +4,7 @@
 (: motivation (-> Expression Expression MotivationalState))
 
 (: StimulusState Type)
-(: stimulus (-> Number Number Number Number StimulusState))
+(: stimulus (-> Expression StimulusState))
 
 (: ActionType Type)
 (: action (-> Symbol Expression Number Expression ActionType))
@@ -17,20 +17,8 @@
     $modulators
 )
 
-(= (stimulusNovelty (stimulus $novelty $conduciveness $risk $effort))
-    $novelty
-)
-
-(= (stimulusConduciveness (stimulus $novelty $conduciveness $risk $effort))
-    $conduciveness
-)
-
-(= (stimulusRisk (stimulus $novelty $conduciveness $risk $effort))
-    $risk
-)
-
-(= (stimulusEffort (stimulus $novelty $conduciveness $risk $effort))
-    $effort
+(= (stimulusValues (stimulus $values))
+    $values
 )
 
 (= (actionId (action $actionId $goalCorrelations $riskEstimate $deltaG))
@@ -60,19 +48,11 @@
     )
 )
 
-(= (validateMotivationalStateShape $motivationState)
-    (validateMotivationState $motivationState (eval (NUM_GOALS)) (eval (NUM_MODULATORS))))
-
-
 (= (validateActionState (action $actionId $goalCorrelations $riskEstimate $deltaG) $numGoals)
     (if (and (== (size-atom $goalCorrelations) $numGoals) (== (size-atom $deltaG) $numGoals))
         True
         False
     )
-)
-
-(= (validateActionShape $actionState)
-    (validateActionState $actionState (eval (NUM_GOALS)))
 )
 
 (= (motivationStateDistance (motivation $goals $modulators) (motivation $goals2 $modulators2))
