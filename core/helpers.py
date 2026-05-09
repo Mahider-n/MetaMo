@@ -210,3 +210,44 @@ def round_number(value, digits=0):
 
 def round_list(arr, digits=0):
     return [round(float(x), digits) for x in arr]
+
+def positive_part(value):
+    """max(0.0, value)"""
+    return max(0.0, float(value))
+
+def mean_at_indices(arr, indices):
+    """Mean of array values at the given indices"""
+    vals = [float(arr[int(i)]) for i in indices]
+    return float(np.mean(vals)) if vals else 0.0
+
+def project_goals_to_safe(goals, weight_idx, theta_safe, g_max):
+    """Project goals into safe region: ensure goals[weight_idx] >= theta_safe and ||goals|| <= g_max."""
+    g = np.asarray(goals, dtype=float).copy()
+    w = int(weight_idx)
+    g[w] = max(g[w], float(theta_safe))
+    other_idx = [i for i in range(len(g)) if i != w]
+    other_goals = g[other_idx]
+    other_norm = np.linalg.norm(other_goals)
+    max_other_norm = np.sqrt(max(0.0, float(g_max)**2 - g[w]**2))
+    if other_norm > max_other_norm and other_norm > 0.0:
+        g[other_idx] = other_goals * (max_other_norm / other_norm)
+    return g.tolist()
+
+def boost_at_indices(arr, indices, boost, max_val=1.0):
+    """Add boost to values at given indices, capped at max_val."""
+    result = [float(x) for x in arr]
+    for idx in indices:
+        i = int(idx)
+        result[i] = min(float(max_val), result[i] + float(boost))
+    return result
+
+def blend_arrays(arr1, arr2, alpha):
+    """Linear blend: (1-alpha)*arr1 + alpha*arr2."""
+    a = np.asarray(arr1, dtype=float)
+    b = np.asarray(arr2, dtype=float)
+    return ((1.0 - float(alpha)) * a + float(alpha) * b).tolist()
+
+def scale_array(arr, factor):
+    """Multiply each element by factor."""
+    return (np.asarray(arr, dtype=float) * float(factor)).tolist()
+

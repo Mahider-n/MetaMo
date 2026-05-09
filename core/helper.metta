@@ -107,3 +107,39 @@
 (= (roundList $arr $digits)
     (py-call (helpers.round_list $arr $digits))
 )
+
+;; Return max(0.0, value)
+;; Example: (positivePart -0.5) → 0.0
+(= (positivePart $value)
+    (py-call (helpers.positive_part $value))
+)
+
+;; Mean of array values at given indices
+;; Example: (meanAtIndices (0.2 0.4 0.6 0.8) (1 3)) → 0.6
+(= (meanAtIndices $arr $indices)
+    (py-call (helpers.mean_at_indices $arr $indices))
+)
+
+;; Project goals into safe region: ensure goals[weightIdx] >= thetaSafe and ||goals|| <= gMax
+;; Example: (projectGoalsToSafe (0.1 0.5 0.9) 0 0.3 2.0)
+(= (projectGoalsToSafe $goals $weightIdx $thetaSafe $gMax)
+    (py-call (helpers.project_goals_to_safe $goals $weightIdx $thetaSafe $gMax))
+)
+
+;; Boost values at given indices by a fixed amount, capped at maxVal
+;; Example: (boostAtIndices (0.5 0.6 0.7) (0 2) 0.1 1.0) → (0.6 0.6 0.8)
+(= (boostAtIndices $arr $indices $boost $maxVal)
+    (py-call (helpers.boost_at_indices $arr $indices $boost $maxVal))
+)
+
+;; Linear blend: (1-alpha)*arr1 + alpha*arr2
+;; Example: (blendArrays (0.0 1.0) (1.0 0.0) 0.5) → (0.5 0.5)
+(= (blendArrays $arr1 $arr2 $alpha)
+    (py-call (helpers.blend_arrays $arr1 $arr2 $alpha))
+)
+
+;; Multiply each element by a scalar factor
+;; Example: (scaleArray (0.5 1.0) 0.5) → (0.25 0.5)
+(= (scaleArray $arr $factor)
+    (py-call (helpers.scale_array $arr $factor))
+)
