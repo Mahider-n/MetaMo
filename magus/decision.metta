@@ -2,25 +2,25 @@
 
 ;; Goal-to-Modulator Relevance Mapping
 ;; Maps each goal to its most relevant modulator(s) for scoring.
-(GoalModulatorRelevance gHelp (resolution))
-(GoalModulatorRelevance gCurio (arousal))
-(GoalModulatorRelevance gNovel (approach))
-(GoalModulatorRelevance gEthic (threshold securing))
-(GoalModulatorRelevance gSoc (valence approach))
-(GoalModulatorRelevance gSelf (approach resolution))
+(goalModulatorRelevance gHelp (resolution))
+(goalModulatorRelevance gCurio (arousal))
+(goalModulatorRelevance gNovel (approach))
+(goalModulatorRelevance gEthic (threshold securing))
+(goalModulatorRelevance gSoc (valence approach))
+(goalModulatorRelevance gSelf (approach resolution))
 
 ;; Goal Category Atoms for Overgoal Support
-(GoalMetaDrive gHelp individuation)
-(GoalMetaDrive gEthic individuation)
-(GoalMetaDrive gCurio transcendence)
-(GoalMetaDrive gNovel transcendence)
-(GoalMetaDrive gSelf dual)
-(GoalMetaDrive gSoc dual)
+(goalMetaDrive gHelp individuation)
+(goalMetaDrive gEthic individuation)
+(goalMetaDrive gCurio transcendence)
+(goalMetaDrive gNovel transcendence)
+(goalMetaDrive gSelf dual)
+(goalMetaDrive gSoc dual)
 
 ;; Exploratory Growth Goal Set
-(GrowthGoal gCurio)
-(GrowthGoal gNovel)
-(GrowthGoal gSelf)
+(growthGoal gCurio)
+(growthGoal gNovel)
+(growthGoal gSelf)
 
 ;; Calculates the average modulator value for a list of modulators relevant to a goal.
 (= (sumModulators $mods $state)
@@ -38,7 +38,7 @@
 ;; Retrieve the relevant modulator weight for a goal (average of relevant modulators).
 ;; Example: (magusRelevantModulator $state gEthic) → average of threshold and securing
 (= (magusRelevantModulator $state $goalName)
-    (let $result (match &self (GoalModulatorRelevance $goalName $mods) $mods)
+    (let $result (match &self (goalModulatorRelevance $goalName $mods) $mods)
         (if (== $result ())
             0.0
             (/ (sumModulators $result $state) (size-atom $result))
@@ -48,7 +48,7 @@
 
 ;; Compute overgoal support for a goal based on individuation and transcendence meta-drives.
 (= (magusOvergoalSupport $goalName $indSignal $transSignal)
-    (let $drive (match &self (GoalMetaDrive $goalName $d) $d)
+    (let $drive (match &self (goalMetaDrive $goalName $d) $d)
         (case $drive (
             (individuation (+ 0.5 (* 0.5 $indSignal)))
             (transcendence (+ 0.5 (* 0.5 $transSignal)))
@@ -60,7 +60,7 @@
 
 ;; Retrieve indices for growth goals to eliminate hardcoded (3 4 5).
 (= (getGrowthIndices)
-    (collapse (match &self (GrowthGoal $name) (match &self (GoalIndex $name $idx) $idx)))
+    (collapse (match &self (growthGoal $name) (match &self (GoalIndex $name $idx) $idx)))
 )
 
 ;; Compute the normalized growth signal for a candidate action.
@@ -120,7 +120,7 @@
         ($growthSignal (/ (+ (eval (getModulator $state arousal)) (eval (getModulator $state approach))) 2.0))
 
         ;; Dynamic list of primary goals to score (those with modulator mappings)
-        ($primaryGoals (collapse (match &self (GoalModulatorRelevance $g $m) $g)))
+        ($primaryGoals (collapse (match &self (goalModulatorRelevance $g $m) $g)))
         ($baseScore (sumGoalContributions $primaryGoals $state $candidate $indSignal $transSignal))
 
         ;; Conflict penalty: curiosity-ethics conflict
