@@ -143,3 +143,7 @@
 (= (scaleArray $arr $factor)
     (py-call (helpers.scale_array $arr $factor))
 )
+
+(= (npClip $value $smallest $largest)
+    (py-call (helpers.npClip $value $smallest $largest))
+)
