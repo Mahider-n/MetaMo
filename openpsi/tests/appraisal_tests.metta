@@ -5,7 +5,7 @@
 !(import! &self ../../category/functors)
 !(import! &self ../config)
 !(import! &self ../appraisal)
-!(import! &self ../appraisal_calculation)
+!(import! &self ../appraisal_helpers)
 
 ;; Helper function to perform appraisal and round the resulting modulator values for comparison in tests.
 ;; Example: (roundAppraisedWith (openPsiAppraisal) (motivation (...) (...)) (stimulus (...)))
