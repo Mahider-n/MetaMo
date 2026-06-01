@@ -106,7 +106,7 @@
 (= (computeTransition $bimonad $state $stimulus $candidates)
     (let* (
         ($decisionState (decisionContext $bimonad $state $stimulus))
-        ($decisionResult (decide (bimonadDecision $bimonad) $decisionState $candidates))
+        ($decisionResult (eval (decide (bimonadDecision $bimonad) $decisionState $candidates)))
         ($action (decisionAction $decisionResult))
         ($nextState (stateFromDelta $bimonad $decisionState (decisionDeltaG $decisionResult)))
     )
@@ -210,8 +210,8 @@
 ;; Example: (consensusTransition myBimonad stateA stateB stimulus (MOVE STAY) 0.05)
 (= (consensusTransition $bimonad $stateA $stateB $stimulus $candidates $coherenceCorrection)
     (let* (
-        ($action (consensusAction $bimonad $stateA $stateB $stimulus $candidates))
-        ($targetState (consensusTargetState $bimonad $stateA $stateB $stimulus $action $coherenceCorrection))
+        ($action  (eval (consensusAction $bimonad $stateA $stateB $stimulus $candidates)))
+        ($targetState (eval (consensusTargetState $bimonad $stateA $stateB $stimulus $action $coherenceCorrection)))
     )
         (transitionResult $action $targetState)
     )
