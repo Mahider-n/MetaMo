@@ -19,7 +19,7 @@
         (appraisalComonad integrationIdentityExtract integrationRichAppraise)
         (decisionMonad integrationIdentityExtract integrationConstantDecide integrationSimpleScore)
         integrationIdentityDamping
-        integrationIdentityBoundary
+        integrationIdentityProject
         integrationIdentityProject
         integrationAlwaysContractive
         integrationAlwaysSafe)
@@ -120,7 +120,7 @@
  !(get-type (metaMoPseudoBimonad (appraisalComonad integrationIdentityExtract integrationRichAppraise) 
          (decisionMonad integrationIdentityExtract integrationConstantDecide integrationSimpleScore) 
          integrationIdentityDamping 
-         integrationIdentityBoundary 
+         integrationIdentityProject 
          integrationIdentityProject 
          integrationAlwaysContractive 
          integrationAlwaysSafe))
