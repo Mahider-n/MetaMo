@@ -1,116 +1,41 @@
 
-; ;; Reusable MetaMo integration entry point.
-; ;;
+;; Reusable MetaMo integration entry point.
 
-; ;; Optional inputs use () as the empty value:
-; ;;   consensus pair: () derives the first two subsystem names when needed
-; ;;   translator:     () skips peer simulations
 
-; ;; SubsystemState
-; ;;
-; ;; Named wrapper for one subsystem's MotivationalState. Use this to build the
-; ;; $states argument passed to runMetaMoCycle.
-; ;;
-; ;; Example:
-; ;;   (subsystemState curiosity
-; ;;       (motivation (0.25 0.75 0.5 0.5 0.5 0.5 0.5 0.5)
-; ;;                   (0.125 0.25 0.375 0.5 0.625 0.75)))
-; (: SubsystemState Type)
-; (: subsystemState (-> Symbol MotivationalState SubsystemState))
-
-; ;; NamedAction
-; ;;
-; ;; Name-preserving wrapper for a subsystem's locally selected action.
-; ;; runMetaMoCycle returns a list of these through cycleLocalActions.
-; ;;
-; ;; Example:
-; ;;   (namedAction curiosity (action inspect (0.0 0.0 0.1 0.5 0.2 0.0 0.0 0.0) 0.1
-; ;;                                 (0.0 0.0 0.0 0.05 0.02 0.0 0.0 0.0)))
-; (: NamedAction Type)
-; (: namedAction (-> Symbol ActionType NamedAction))
-
-; ;; NamedMotivation
-; ;;
-; ;; Name-preserving wrapper for a subsystem motivational state. It is used for
-; ;; local target states and optional peer simulations.
-; ;;
-; ;; Example:
-; ;;   (namedMotivation ethics (motivation (0.3 0.7 0.5 0.4 0.4 0.5 0.8 0.5)
-; ;;                                      (0.2 0.3 0.4 0.5 0.6 0.7)))
-; (: NamedMotivation Type)
-; (: namedMotivation (-> Symbol MotivationalState NamedMotivation))
-
-; ;; LocalTransition
-; ;;
-; ;; Internal representation of one subsystem's bimonad step result.
-; ;; It keeps the subsystem name, selected action, and local target together
-; ;; before the result is converted into public NamedAction/NamedMotivation lists.
-; ;;
-; ;; Example:
-; ;;   (localTransition curiosity someAction someTargetState)
-; (: LocalTransition Type)
-; (: localTransition (-> Symbol ActionType MotivationalState LocalTransition))
-
-; ;; ConsensusPair
-; ;;
-; ;; Names the two subsystems used for direct consensus action selection.
-; ;; Pass () to runMetaMoCycle to use the first two subsystem names.
-; ;;
-; ;; Example:
-; ;;   (consensusPair curiosity ethics)
-; (: ConsensusPair Type)
-; (: consensusPair (-> Symbol Symbol ConsensusPair))
-
-; ;; MetaMoCycleResult
-; ;;
-; ;; Structured output of one reusable MetaMo cycle. Prefer the cycle* accessor
-; ;; functions below instead of destructuring this directly.
-; ;;
-; ;; Field order:
-; ;;   finalAction, mergedCurrent, mergedTarget, nextStates,
-; ;;   localActions, localTargets, peerSimulations
-; ;;
-; ;; Example:
-; ;;   (cycleFinalAction (runMetaMoCycleDefault bimonad states stimulus candidates () ()))
-; (: MetaMoCycleResult Type)
-; (: metaMoCycleResult
-;    (-> ActionType MotivationalState MotivationalState Expression Expression Expression Expression MetaMoCycleResult))
-
-;; Return the Symbol name from a subsystemState.
-;; Example: (subsystemName (subsystemState curiosity s)) -> curiosity
-(= (subsystemName (subsystemState $name $state))
+(= (namedContainerName ($tag $name $value))
     $name
 )
 
-;; Return the MotivationalState from a subsystemState.
+(= (namedContainerValue ($tag $name $value))
+    $value
+)
+
+;; subsystemState aliases
+;; Example: (subsystemName  (subsystemState curiosity s)) -> curiosity
 ;; Example: (subsystemMotivation (subsystemState curiosity s)) -> s
-(= (subsystemMotivation (subsystemState $name $state))
-    $state
-)
+(= (subsystemName      $s) (namedContainerName  $s))
+(= (subsystemMotivation $s) (namedContainerValue $s))
 
-;; Return the Symbol name from a namedAction.
-;; Example: (namedActionName (namedAction curiosity a)) -> curiosity
-(= (namedActionName (namedAction $name $action))
-    $name
-)
-
-;; Return the ActionType from a namedAction.
+;; namedAction aliases
+;; Example: (namedActionName  (namedAction curiosity a)) -> curiosity
 ;; Example: (namedActionValue (namedAction curiosity a)) -> a
-(= (namedActionValue (namedAction $name $action))
-    $action
-)
+(= (namedActionName  $n) (namedContainerName  $n))
+(= (namedActionValue $n) (namedContainerValue $n))
 
-;; Return the Symbol name from a namedMotivation.
-;; Example: (namedMotivationName (namedMotivation ethics s)) -> ethics
-(= (namedMotivationName (namedMotivation $name $state))
-    $name
-)
-
-;; Return the MotivationalState from a namedMotivation.
+;; namedMotivation aliases
+;; Example: (namedMotivationName  (namedMotivation ethics s)) -> ethics
 ;; Example: (namedMotivationValue (namedMotivation ethics s)) -> s
-(= (namedMotivationValue (namedMotivation $name $state))
-    $state
-)
+(= (namedMotivationName  $n) (namedContainerName  $n))
+(= (namedMotivationValue $n) (namedContainerValue $n))
+
+;; consensusPair aliases
+;; Example: (consensusPairLeft  (consensusPair curiosity ethics)) -> curiosity
+;; Example: (consensusPairRight (consensusPair curiosity ethics)) -> ethics
+(= (consensusPairLeft  $p) (namedContainerName  $p))
+(= (consensusPairRight $p) (namedContainerValue $p))
+
+;; localTransition is a 3-field type (name, action, target) so it keeps its
+;; own dedicated accessors.
 
 ;; Return the Symbol name from a localTransition.
 ;; Example: (localTransitionName (localTransition curiosity a s)) -> curiosity
@@ -128,18 +53,6 @@
 ;; Example: (localTransitionTarget (localTransition curiosity a s)) -> s
 (= (localTransitionTarget (localTransition $name $action $target))
     $target
-)
-
-;; Return the left subsystem name from a consensusPair.
-;; Example: (consensusPairLeft (consensusPair curiosity ethics)) -> curiosity
-(= (consensusPairLeft (consensusPair $left $right))
-    $left
-)
-
-;; Return the right subsystem name from a consensusPair.
-;; Example: (consensusPairRight (consensusPair curiosity ethics)) -> ethics
-(= (consensusPairRight (consensusPair $left $right))
-    $right
 )
 
 ;; Extract the final consensus action selected for execution.
@@ -238,10 +151,9 @@
 ;;
 ;; Example:
 ;;   (mergeSubsystemStates
-;;       (defaultMetaMoBimonad)
 ;;       ((subsystemState curiosity stateA) (subsystemState ethics stateB))
 ;;       0.05)
-(= (mergeSubsystemStates $bimonad $states $coherenceCorrection)
+(= (mergeSubsystemStates $states $coherenceCorrection)
     (let* (
         (($head $rest) (decons $states))
     )
@@ -326,6 +238,34 @@
     )
 )
 
+;; Find one namedAction from cycleLocalActions by subsystem name.
+;; Symmetric to findLocalTransition.
+;; Example: (findNamedAction curiosity localActions) -> (namedAction curiosity actionA)
+(= (findNamedAction $name $namedActions)
+    (let* (
+        (($head $rest) (decons-atom $namedActions))
+    )
+        (if (== (namedActionName $head) $name)
+            $head
+            (findNamedAction $name $rest)
+        )
+    )
+)
+
+;; Find one namedMotivation from cyclePeerSimulations by subsystem name.
+;; Symmetric to findNamedAction for the peer simulation output.
+;; Example: (findNamedMotivation curiosity peerSims) -> (namedMotivation curiosity simState)
+(= (findNamedMotivation $name $namedMotivations)
+    (let* (
+        (($head $rest) (decons-atom $namedMotivations))
+    )
+        (if (== (namedMotivationName $head) $name)
+            $head
+            (findNamedMotivation $name $rest)
+        )
+    )
+)
+
 ;; Convert internal localTransition entries to public namedAction entries.
 ;; Example:
 ;;   (localTransitionsToActions ((localTransition curiosity actionA targetA)))
@@ -406,7 +346,7 @@
     (if (== $states ())
         ()
         (let* (
-            (($head $rest) (decons $states))
+            (($head $rest) (decons-atom $states))
             ($entry (namedMotivation
                 (subsystemName $head)
                 (simulatePeer $translator (subsystemMotivation $head))))
@@ -514,7 +454,7 @@
         $blend
         $coherenceCorrection)
     (let* (
-        ($mergedCurrent (mergeSubsystemStates $bimonad $states $coherenceCorrection))
+        ($mergedCurrent (mergeSubsystemStates $states $coherenceCorrection))
         ($localTransitions (computeLocalTransitions $bimonad $states $stimulus $candidates))
         ($consensusTransition  (cycleConsensusTransition
             $bimonad
@@ -570,11 +510,9 @@
 )
 
 ;; Test fixtures for the integration point.
-
-;; Identity extractor used by the mock appraisal comonad in tests.
-;; Example: (integrationIdentityExtract state) -> state
-(= (integrationIdentityExtract $state)
-    $state
+;; Example: (integrationIdentity state) -> state
+(= (integrationIdentity $x)
+    $x
 )
 
 ;; Simple test appraisal that adds the first two stimulus values to the first
@@ -622,18 +560,6 @@
 ;; Example: (integrationIdentityDamping state deltaG) -> deltaG
 (= (integrationIdentityDamping $state $deltaG)
     $deltaG
-)
-
-;; Identity boundary fixture used to keep test appraised states unchanged.
-;; Example: (integrationIdentityBoundary state) -> state
-(= (integrationIdentityBoundary $state)
-    $state
-)
-
-;; Identity projection fixture used to keep test target states unchanged.
-;; Example: (integrationIdentityProject state) -> state
-(= (integrationIdentityProject $state)
-    $state
 )
 
 ;; Contractivity fixture that accepts all transitions in tests.
