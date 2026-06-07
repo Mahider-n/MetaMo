@@ -71,14 +71,14 @@
     False
 )
 
-;; nextStateCalculator blends the current state toward the target state.
+;; stateTowardTarget blends the current state toward the target state.
 !(test
-    (nextStateCalculator (coherenceState) (coherenceState) 0.35)
+    (stateTowardTarget (coherenceState) (coherenceState) 0.35)
     (coherenceState)
 )
 
 !(test
-    (nextStateCalculator (coherenceState) (coherenceTarget) 0.5)
+    (stateTowardTarget (coherenceState) (coherenceTarget) 0.5)
     (motivation
         (0.3 0.7 0.5 0.5 0.5 0.5 0.5 0.5)
         (0.15 0.25 0.3 0.4 0.5 0.6)
@@ -86,32 +86,33 @@
 )
 
 ;; blendStatesHelper returns the candidate state when the target drift is allowed.
+;; candidateState = coherenceTarget; drift coherenceState->coherenceTarget within maxDrift=10.0.
 !(test
     (blendStatesHelper
         (coherenceState)
+        (coherenceTarget)
         (coherenceTarget)
         0.2
         0.02
         1.0
         10.0
     )
-    (motivation
-        (0.24 0.76 0.5 0.5 0.5 0.5 0.5 0.5)
-        (0.12 0.22 0.3 0.4 0.5 0.6)
-    )
+    (coherenceTarget)
 )
 
-;; blendStatesHelper also returns the candidate state once alpha reaches minAlpha.
+;; blendStatesHelper returns the candidate state once alpha reaches minAlpha.
+;; candidateState = coherenceTarget; alpha == minAlpha terminates search immediately.
 !(test
     (blendStatesHelper
         (coherenceState)
+        (coherenceTarget)
         (coherenceTarget)
         0.02
         0.02
         1.0
         0.0
     )
-    (nextStateCalculator (coherenceState) (coherenceTarget) 0.02)
+    (coherenceTarget)
 )
 
 ;; blendStates is stable for an already-identical current and target state.
