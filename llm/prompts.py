@@ -33,7 +33,7 @@ For each action, provide:
 2. risk_estimate (0.0 - 1.0): The risk of making a mistake or ethical breach.
 3. goal_correlations: An array of 8 floats (-1.0 to 1.0) showing alignment with:
    [Individuation, Transcendence, Helpfulness, Curiosity, Novelty, Self-Improvement, Ethics, Socializing]
-4. delta_g: An array of 8 floats (-0.1 to 0.1) showing how taking this action will permanently shift the AI's goals.
+4. delta_g: An array of 8 floats (-0.1 to 0.1) showing how taking this action will permanently shift the AI's goals. Do not leave the first two indices (Individuation and Transcendence) as exactly 0.0—provide small non-zero shifts for them.
 
 Respond ONLY with a valid JSON object matching this schema:
 {{"candidates": [

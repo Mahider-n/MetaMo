@@ -65,32 +65,32 @@ def _fallback_candidates(document_text: str, current_mood: Dict[str, float]) -> 
     text = document_text.lower()
     if any(word in text for word in ["unsafe", "bypass", "exploit", "illegal", "weapon"]):
         return [
-            Action("decline_risky_request", np.array([0, 0, 0.3, -0.2, -0.2, 0.0, 1.0, 0.0], dtype=float), 0.0, np.zeros(8)),
-            Action(DEFAULT_ACTION_ID, np.array([0, 0, 0.8, 0.0, 0.0, 0.0, 0.9, 0.0], dtype=float), 0.05, np.zeros(8)),
+            Action("decline_risky_request", np.array([0, 0, 0.3, -0.2, -0.2, 0.0, 1.0, 0.0], dtype=float), 0.0, np.array([0.03, -0.02, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0], dtype=float)),
+            Action(DEFAULT_ACTION_ID, np.array([0, 0, 0.8, 0.0, 0.0, 0.0, 0.9, 0.0], dtype=float), 0.05, np.array([0.01, -0.01, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0], dtype=float)),
         ]
     if any(word in text for word in ["compare", "versus", "vs", "tradeoff", "options"]):
         return [
-            Action("compare_options", np.array([0, 0, 0.8, 0.3, 0.2, 0.1, 0.8, 0.2], dtype=float), 0.08, np.zeros(8)),
-            Action(DEFAULT_ACTION_ID, np.array([0, 0, 0.85, 0.1, 0.0, 0.0, 0.9, 0.1], dtype=float), 0.05, np.zeros(8)),
+            Action("compare_options", np.array([0, 0, 0.8, 0.3, 0.2, 0.1, 0.8, 0.2], dtype=float), 0.08, np.array([-0.01, 0.02, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0], dtype=float)),
+            Action(DEFAULT_ACTION_ID, np.array([0, 0, 0.85, 0.1, 0.0, 0.0, 0.9, 0.1], dtype=float), 0.05, np.array([-0.01, 0.01, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0], dtype=float)),
         ]
     if any(word in text for word in ["summarize", "summary", "paper", "book", "source"]):
         return [
-            Action("summarize_source", np.array([0, 0, 0.85, 0.1, 0.0, 0.0, 0.9, 0.1], dtype=float), 0.05, np.zeros(8)),
-            Action(DEFAULT_ACTION_ID, np.array([0, 0, 0.8, 0.1, 0.0, 0.0, 0.9, 0.1], dtype=float), 0.05, np.zeros(8)),
+            Action("summarize_source", np.array([0, 0, 0.85, 0.1, 0.0, 0.0, 0.9, 0.1], dtype=float), 0.05, np.array([-0.01, 0.01, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0], dtype=float)),
+            Action(DEFAULT_ACTION_ID, np.array([0, 0, 0.8, 0.1, 0.0, 0.0, 0.9, 0.1], dtype=float), 0.05, np.array([-0.01, 0.01, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0], dtype=float)),
         ]
     if any(word in text for word in ["?", "which", "choose", "unclear"]) and len(text.split()) < 12:
         return [
-            Action("ask_clarifying_question", np.array([0, 0, 0.75, 0.2, 0.1, 0.1, 0.85, 0.3], dtype=float), 0.03, np.zeros(8)),
-            Action(DEFAULT_ACTION_ID, np.array([0, 0, 0.8, 0.1, 0.0, 0.0, 0.9, 0.1], dtype=float), 0.05, np.zeros(8)),
+            Action("ask_clarifying_question", np.array([0, 0, 0.75, 0.2, 0.1, 0.1, 0.85, 0.3], dtype=float), 0.03, np.array([-0.02, 0.02, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0], dtype=float)),
+            Action(DEFAULT_ACTION_ID, np.array([0, 0, 0.8, 0.1, 0.0, 0.0, 0.9, 0.1], dtype=float), 0.05, np.array([-0.01, 0.01, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0], dtype=float)),
         ]
     if any(word in text for word in ["bold", "creative", "future", "autonomous", "improve"]):
         return [
-            Action("guided_explore", np.array([0, 0, 0.45, 0.88, 0.82, 0.65, 0.35, 0.15], dtype=float), 0.18, np.array([0, 0, 0.0, 0.05, 0.06, 0.04, 0.0, 0.0], dtype=float)),
-            Action(DEFAULT_ACTION_ID, np.array([0, 0, 0.85, 0.15, 0.0, 0.0, 0.9, 0.1], dtype=float), 0.08, np.array([0, 0, 0.02, 0.0, 0.0, 0.0, 0.01, 0.0], dtype=float)),
+            Action("guided_explore", np.array([0, 0, 0.45, 0.88, 0.82, 0.65, 0.35, 0.15], dtype=float), 0.18, np.array([0.02, -0.01, 0.0, 0.05, 0.06, 0.04, 0.0, 0.0], dtype=float)),
+            Action(DEFAULT_ACTION_ID, np.array([0, 0, 0.85, 0.15, 0.0, 0.0, 0.9, 0.1], dtype=float), 0.08, np.array([0.01, -0.01, 0.02, 0.0, 0.0, 0.0, 0.01, 0.0], dtype=float)),
         ]
     return [
-        Action(DEFAULT_ACTION_ID, np.array([0, 0, 0.85, 0.15, 0.0, 0.0, 0.9, 0.1], dtype=float), 0.05, np.zeros(8)),
-        Action("guided_explore", np.array([0, 0, 0.45, 0.88, 0.82, 0.65, 0.35, 0.15], dtype=float), 0.18, np.zeros(8)),
+        Action(DEFAULT_ACTION_ID, np.array([0, 0, 0.85, 0.15, 0.0, 0.0, 0.9, 0.1], dtype=float), 0.05, np.array([-0.01, 0.01, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0], dtype=float)),
+        Action("guided_explore", np.array([0, 0, 0.45, 0.88, 0.82, 0.65, 0.35, 0.15], dtype=float), 0.18, np.array([0.02, -0.01, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0], dtype=float)),
     ]
 
 
