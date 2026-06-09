@@ -23,7 +23,7 @@
 (= (getMod $space $modulator-name)
     (let*
       (
-        ($mod-vec   (match $space (state $turn  $x $y $z $alpha) $y))
+        ($mod-vec   (match $space ($goals $modulators $anti-goals) $modulators))
         ($mod-list  (cdr-atom $mod-vec))
         ($pair      (matchValue $modulator-name $mod-list))
       )
@@ -58,7 +58,36 @@
 
 )
 )
-
+ 
+(= (get-goal $space $goal-name)
+ (let*
+  (
+    ($goal-vec  (match $space ($goals $modulators $anti-goals) $goals))
+    ($goal-list (cdr-atom $goal-vec))
+    ($pair
+      (case $goal-name
+        (
+          (efficiency           (index-atom $goal-list 0))
+          (accuracy             (index-atom $goal-list 1))
+          (success_moderate     (index-atom $goal-list 2))
+          (knowledge            (index-atom $goal-list 3))
+          (novelty              (index-atom $goal-list 4))
+          (success_breakthrough (index-atom $goal-list 5))
+          (coherence            (index-atom $goal-list 6))
+          (originality          (index-atom $goal-list 7))
+          (social               (index-atom $goal-list 8))
+          (help_short           (index-atom $goal-list 9))
+          (help_long            (index-atom $goal-list 10))
+          (over_beneficial      (index-atom $goal-list 11))
+          (over_safety          (index-atom $goal-list 12))
+          (over_honesty         (index-atom $goal-list 13))
+        )
+      )
+    )
+  )
+  (index-atom $pair 1)
+ )
+)
 (= (getGoal $space $goal-name)
    (get-goal $space $goal-name)
 )
@@ -66,19 +95,36 @@
 (= (remove-state-app $space)
  (let $state (getState $space) (remove-atom $space $state))
 )
+; we don't need this this should be done by the appraisal 
 
-(= (update-mods $space $mods)
-      (let* (
-         ($goal     (getGoals $space))
-         ($t   (match $space (state $turn  $x $y $z $alpha) $turn))
-         ($alpha    (match $space (state $turn  $x $y $z $alpha) $alpha))
-         ($anti  (match $space (state $turn  $x $y $z $alpha) $z))
-         ($_ (remove-state-app $space))
-         ($updated  (state  $t $goal (cons modulator-vector $mods) $anti $alpha))
-         ($_ (addState $space $updated))          
-         )
-         (println! (mods update success 🎉))
-   )
+; (= (update-mods $space $mods)
+;       (let* (
+;          ($goal     (getGoals $space))
+;          ($t   (match $space (state $turn  $x $y $z $alpha) $turn))
+;          ($alpha    (match $space (state $turn  $x $y $z $alpha) $alpha))
+;          ($anti  (match $space (state $turn  $x $y $z $alpha) $z))
+;          ($_ (remove-state-app $space))
+;          ($updated  (state  $t $goal (cons modulator-vector $mods) $anti $alpha))
+;          ($_ (addState $space $updated))          
+;          )
+;          (println! (mods update success 🎉))
+;    )
+; )
+(= (addItems $baseCase $space $items)
+   (if (== $items ())
+        $baseCase
+        (let* (
+               ($h (car-atom $items))
+               ($t (cdr-atom $items))
+               ($_ (add-atom $space $h))
+               )
+          (addItems $baseCase $space $t)
+          )
+     )
 )
 
-(= (getGoals $space)(match $space (state (turn $turn) $x $y $z $alpha) $x))
+(= (getGoals $space) (match $space ($goals $modulators $anti-goals) $goals))
+(= (addState $space $state)
+    (add-atom $space $state)
+)
+(= (addAlpha $space $list)    (addItems () $space $list))

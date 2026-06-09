@@ -8,19 +8,19 @@
 
 
 !(test
-  (stimulusValues (
+  (projectStimulus (
     (urgent 0.0) (complexity 0.1) (ambiguity 0.0) (expertise 0.5) 
     (threshold 0.0) (topic_familiarity 0.9) (failure_signal 0.0) 
     (intent_type factual) (reflective_intent 0.1) (verify_request 0.0) 
     (needs_external_evidence 0.0) (needs_task_plan 0.0) 
     (needs_multi_source_integration 0.0) (valence 0.0)
-  ))
+  ))projectStimulus
   ((novelty 0.08499999999999999) (conduciveness 0.76) (risk 0.009999999999999998) (effort 0.04000000000000001))
 )
 
 
 !(test
-  (stimulusValues (
+  (projectStimulus (
     (urgent 0.0) (complexity 0.0) (ambiguity 0.0) (expertise 0.0) 
     (threshold 0.0) (topic_familiarity 0.0) (failure_signal 0.0) 
     (intent_type factual) (reflective_intent 0.0) (verify_request 0.0) 
@@ -31,7 +31,7 @@
 )
 
 !(test
-  (stimulusValues (
+  (projectStimulus (
     (urgent 1.0) (complexity 1.0) (ambiguity 1.0) (expertise 1.0) 
     (threshold 1.0) (topic_familiarity 1.0) (failure_signal 1.0) 
     (intent_type factual) (reflective_intent 1.0) (verify_request 1.0) 
@@ -42,7 +42,7 @@
 )
 
 !(test
-  (stimulusValues (
+  (projectStimulus (
     (urgent 0.0) (complexity 0.0) (ambiguity 0.0) (expertise 1.0) 
     (threshold 0.0) (topic_familiarity 1.0) (failure_signal 0.0) 
     (intent_type factual) (reflective_intent 0.0) (verify_request 0.0) 

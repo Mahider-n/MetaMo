@@ -99,7 +99,7 @@
   )
 )
 
-(= (stimulusValues $context-list)
+(= (projectStimulus $context-list)
   (let (stimulus $vals) (contextToStimulus $context-list) $vals)
 )
  

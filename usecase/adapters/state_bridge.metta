@@ -79,58 +79,58 @@
     )
   )
 )
-
+; we don't need thing, since the motivation update is done through appraisal 
 ;  injectMotivation  
 ; writes a MetaMo motivation state's modulators back into the Qwestor space via a soft blend 
 ; Example: (injectMotivation &space metamo-state 0.15)
 
-(= (injectMotivation $space $metamo-state $blend-alpha)
-  (let*
-    (
-      ((motivation $goals $mods) $metamo-state)
+; (= (injectMotivation $space $metamo-state $blend-alpha)
+;   (let*
+;     (
+;       ((motivation $goals $mods) $metamo-state)
 
-      ; extract OpenPSI modulators  
-      ($val_openpsi (index-atom $mods 0))  
-      ($arousal_new (index-atom $mods 1))
-      ($approach_new (index-atom $mods 2))
-      ($resolution_new (index-atom $mods 3))
-      ($threshold_new (index-atom $mods 4))
-      ($securing_new (index-atom $mods 5))
+;       ; extract OpenPSI modulators  
+;       ($val_openpsi (index-atom $mods 0))  
+;       ($arousal_new (index-atom $mods 1))
+;       ($approach_new (index-atom $mods 2))
+;       ($resolution_new (index-atom $mods 3))
+;       ($threshold_new (index-atom $mods 4))
+;       ($securing_new (index-atom $mods 5))
 
       
-      ($val_qwestor (eval (_clamp11 (- (* $val_openpsi 2.0) 1.0))))
+;       ($val_qwestor (eval (_clamp11 (- (* $val_openpsi 2.0) 1.0))))
 
-      ; read current Qwestor modulators 
-      ($cur_val (getMod $space m_valence))
-      ($cur_ar  (getMod $space m_arousal))
-      ($cur_app (getMod $space m_approach))
-      ($cur_res (getMod $space m_resolution))
-      ($cur_thr (getMod $space m_threshold))
-      ($cur_sec (getMod $space m_securing))
+;       ; read current Qwestor modulators 
+;       ($cur_val (getMod $space m_valence))
+;       ($cur_ar  (getMod $space m_arousal))
+;       ($cur_app (getMod $space m_approach))
+;       ($cur_res (getMod $space m_resolution))
+;       ($cur_thr (getMod $space m_threshold))
+;       ($cur_sec (getMod $space m_securing))
 
-      ; blend: new = (1-alpha)*current + alpha*metamo  
-      ($b (eval (_clamp01 $blend-alpha)))
-      ($nb (- 1.0 $b))
+;       ; blend: new = (1-alpha)*current + alpha*metamo  
+;       ($b (eval (_clamp01 $blend-alpha)))
+;       ($nb (- 1.0 $b))
 
-      ($blended-mods (
-        (m_urgency           (getMod $space m_urgency))
-        (m_resolution        (eval (_clamp01 (+ (* $nb $cur_res) (* $b $resolution_new)))))
-        (m_user_expertise    (getMod $space m_user_expertise))
-        (m_threshold         (eval (_clamp01 (+ (* $nb $cur_thr) (* $b $threshold_new)))))
-        (m_topic_familiarity (getMod $space m_topic_familiarity))
-        (m_failure_wariness  (getMod $space m_failure_wariness))
-        (m_securing          (eval (_clamp01 (+ (* $nb $cur_sec) (* $b $securing_new)))))
-        (m_approach          (eval (_clamp01 (+ (* $nb $cur_app) (* $b $approach_new)))))
-        (m_arousal           (eval (_clamp01 (+ (* $nb $cur_ar)  (* $b $arousal_new)))))
-        (m_risk_aversion     (getMod $space m_risk_aversion))
-        (m_error_tolerance   (getMod $space m_error_tolerance))
-        (m_creativity        (getMod $space m_creativity))
-        (m_valence           (eval (_clamp11 (+ (* $nb $cur_val) (* $b $val_qwestor)))))
-      ))
-    )
-    (update-mods $space $blended-mods)
-  )
-)
+;       ($blended-mods (
+;         (m_urgency           (getMod $space m_urgency))
+;         (m_resolution        (eval (_clamp01 (+ (* $nb $cur_res) (* $b $resolution_new)))))
+;         (m_user_expertise    (getMod $space m_user_expertise))
+;         (m_threshold         (eval (_clamp01 (+ (* $nb $cur_thr) (* $b $threshold_new)))))
+;         (m_topic_familiarity (getMod $space m_topic_familiarity))
+;         (m_failure_wariness  (getMod $space m_failure_wariness))
+;         (m_securing          (eval (_clamp01 (+ (* $nb $cur_sec) (* $b $securing_new)))))
+;         (m_approach          (eval (_clamp01 (+ (* $nb $cur_app) (* $b $approach_new)))))
+;         (m_arousal           (eval (_clamp01 (+ (* $nb $cur_ar)  (* $b $arousal_new)))))
+;         (m_risk_aversion     (getMod $space m_risk_aversion))
+;         (m_error_tolerance   (getMod $space m_error_tolerance))
+;         (m_creativity        (getMod $space m_creativity))
+;         (m_valence           (eval (_clamp11 (+ (* $nb $cur_val) (* $b $val_qwestor)))))
+;       ))
+;     )
+;     (update-mods $space $blended-mods)
+;   )
+; )
 
 ; motivationSummary  
 ; returns a human-readable pair-list of the MetaMo motivation state for logging
