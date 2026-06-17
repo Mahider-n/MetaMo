@@ -4,12 +4,12 @@
 
 ;; P(m, indicator): eq. (15)
 ;; Maps a modulator level $m to a membership in [0,1] given a fuzzy indicator.
-(= (emotionP $m EL) (eval (fuzzyLow  $m (eval (FUZZY_T_EL)) (eval (FUZZY_ALPHA)))))
-(= (emotionP $m L)  (eval (fuzzyLow  $m (eval (FUZZY_T_L))  (eval (FUZZY_ALPHA)))))
-(= (emotionP $m M)  (eval (fuzzyEqual $m (eval (FUZZY_T_M)) (eval (FUZZY_ALPHA)))))
-(= (emotionP $m H)  (eval (fuzzyHigh $m (eval (FUZZY_T_H))  (eval (FUZZY_ALPHA)))))
-(= (emotionP $m EH) (eval (fuzzyHigh $m (eval (FUZZY_T_EH)) (eval (FUZZY_ALPHA)))))
-(= (emotionP $m U)  0.0)
+(= (indicatorMembership $m EL) (eval (fuzzyLow  $m (eval (FUZZY_T_EL)) (eval (FUZZY_ALPHA)))))
+(= (indicatorMembership $m L)  (eval (fuzzyLow  $m (eval (FUZZY_T_L))  (eval (FUZZY_ALPHA)))))
+(= (indicatorMembership $m M)  (eval (fuzzyEqual $m (eval (FUZZY_T_M)) (eval (FUZZY_ALPHA)))))
+(= (indicatorMembership $m H)  (eval (fuzzyHigh $m (eval (FUZZY_T_H))  (eval (FUZZY_ALPHA)))))
+(= (indicatorMembership $m EH) (eval (fuzzyHigh $m (eval (FUZZY_T_EH)) (eval (FUZZY_ALPHA)))))
+(= (indicatorMembership $m U)  0.0)
 
 ;; indicator lookup
 ;; Returns the indicator symbol for an (emotion, modulator) pair from the table.
@@ -24,7 +24,7 @@
     (let* (
         ($level     (getModulator $state $modulator))
         ($indicator (emotionIndicator $emotion $modulator))
-        ($p         (emotionP $level $indicator))
+        ($p         (indicatorMembership $level $indicator))
     )
         (* (eval (EMOTION_WEIGHT)) $p)
     )
