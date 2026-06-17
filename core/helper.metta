@@ -147,3 +147,21 @@
 (= (npClip $value $smallest $largest)
     (py-call (helpers.npClip $value $smallest $largest))
 )
+
+
+; OpenPsi fuzzy membership primitives
+
+;; fuzzy_equal(x, t, alpha) = 1 / (1 + alpha*(x-t)^2)
+(= (fuzzyEqual $x $t $alpha)
+    (py-call (helpers.fuzzy_equal $x $t $alpha))
+)
+
+;; fuzzy_low: 1.0 at/below t, decays above
+(= (fuzzyLow $x $t $alpha)
+    (py-call (helpers.fuzzy_low $x $t $alpha))
+)
+
+;; fuzzy_high: 1.0 at/above t, decays below
+(= (fuzzyHigh $x $t $alpha)
+    (py-call (helpers.fuzzy_high $x $t $alpha))
+)
