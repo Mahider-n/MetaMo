@@ -121,6 +121,14 @@
 (= (EMOTION_DIM_MODULATORS) (arousal resolution securing threshold valence))
 
 ;; Emotion index atoms
+
+;; Type definitions for the emotion constructors (cf. core/state.metta)
+(: EmotionIndexType Type)
+(: EmotionIndex (-> Symbol Number EmotionIndexType))
+
+(: EmotionModulatorType Type)
+(: EmotionModulator (-> Symbol Symbol Symbol EmotionModulatorType))
+
 (EmotionIndex happy 0)
 (EmotionIndex sad   1)
 (EmotionIndex angry 2)
