@@ -30,7 +30,7 @@ def normalize_vector(arr):
     return (a / n).tolist() if n > 0 else a.tolist()
 
 
-# --- array operations ---
+# Array Operations
 
 
 def split(arr, indices_or_sections):
@@ -68,7 +68,7 @@ def dot_array(arr1, arr2):
     return float(np.dot(a, b))
 
 
-# --- additional helper functions ---
+# Additional Helper Functions
 
 
 def vector_add(arr1, arr2):
@@ -307,3 +307,29 @@ def npClip(value, smallest, largest):
 def identity_matrix(n):
     """Returns an nxn identity matrix as a list of lists."""
     return np.eye(int(n)).tolist()
+
+
+# OpenPsi fuzzy membership primitives
+
+def fuzzy_equal(x, t, alpha):
+    """eq. (2): 1 / (1 + alpha*(x-t)^2). Peaks at x==t, decays otherwise."""
+    x = float(x)
+    t = float(t)
+    alpha = float(alpha)
+    return float(1.0 / (1.0 + alpha * (x - t) ** 2))
+
+
+def fuzzy_low(x, t, alpha):
+    """eq. (16): fuzzy_equal(x,t,alpha) if x > t, else 1.0 (full 'low' membership at/below t)."""
+    x = float(x)
+    if x > float(t):
+        return fuzzy_equal(x, t, alpha)
+    return 1.0
+
+
+def fuzzy_high(x, t, alpha):
+    """eq. (17): fuzzy_equal(x,t,alpha) if x < t, else 1.0 (full 'high' membership at/above t)."""
+    x = float(x)
+    if x < float(t):
+        return fuzzy_equal(x, t, alpha)
+    return 1.0
