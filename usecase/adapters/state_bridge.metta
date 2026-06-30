@@ -10,25 +10,40 @@
 ; These are derived from Qwestor's running modulators and goal weights;
 
 ; Goal mapping (Qwestor → OpenPSI):
-;   gInd   ← over_safety  (self-preservation / ethical constraint)
-;   gTrans ← (novelty + success_breakthrough) / 2  (growth)
-;   gHelp  ← (help_short + help_long) / 2           (helpfulness)
-;   gCurio ← knowledge                              (curiosity)
-;   gNovel ← novelty                                (novelty)
-;   gSelf  ← success_moderate                       (competence)
-;   gEthic ← over_honesty                           (honesty / ethics)
-;   gSoc   ← social                                 (social alignment)
+;    gInd   = C(over_safety)
+;
+;    gTrans = C(success_breakthrough)
+;
+;    gHelp  = C((help_short + help_long + over_beneficial) / 3)
+;
+;    gCurio = C((knowledge + coherence) / 2)
+;
+;    gNovel = C((novelty + originality) / 2)
+;
+;    gSelf  = C((efficiency + accuracy + success_moderate) / 3)
+;
+;    gEthic = C(over_honesty)
+;
+;    gSoc   = C(social)
+ 
 ;
 ; Modulator mapping (Qwestor → OpenPSI):
-;   valence    ← m_valence   (direct, same semantics)
-;   arousal    ← m_arousal   (direct)
-;   approach   ← m_approach  (direct)
-;   resolution ← m_resolution (direct)
-;   threshold  ← m_threshold  (direct)
-;   securing   ← m_securing   (direct)
+ 
+; 
+;   valence converts the Qwestor range [-1, 1] to the OpenPSI range [0, 1]
+;   before applying the clamp.
 ;
-; INJECTION (MetaMo → Qwestor space)
-
+; valence   = C((m_valence + 1.0) / 2)
+;
+; arousal   = C((m_arousal + m_urgency) / 2)
+;
+; approach  = C((m_approach + m_creativity) / 2)
+;
+; resolution = C((m_resolution + m_topic_familiarity + m_user_expertise) / 3)
+;
+; threshold = C((m_threshold + m_error_tolerance) / 2)
+;
+; securing  = C((m_securing + m_failure_wariness + m_risk_aversion) / 3)
 
 
 ; projectToMotivation: reads the current Qwestor space and returns a MetaMo motivation state.
@@ -40,42 +55,69 @@
 (= (projectToMotivation $space)
   (let*
     (
-      ; read goal weights from Qwestor space  
-      ($over_safety        (getGoalQwestor $space over_safety))
-      ($novelty_g          (getGoalQwestor $space novelty))
-      ($breakthrough_g     (getGoalQwestor $space success_breakthrough))
-      ($help_short_g       (getGoalQwestor $space help_short))
-      ($help_long_g        (getGoalQwestor $space help_long))
-      ($knowledge_g        (getGoalQwestor $space knowledge))
-      ($success_moderate_g (getGoalQwestor $space success_moderate))
-      ($over_honesty_g     (getGoalQwestor $space over_honesty))
-      ($social_g           (getGoalQwestor $space social))
+      ; Read 14 goal weights from Qwestor space 
+      ($efficiency_g      (getGoalQwestor $space efficiency))
+      ($accuracy_g        (getGoalQwestor $space accuracy))
+      ($success_mod_g     (getGoalQwestor $space success_moderate))
+      ($knowledge_g       (getGoalQwestor $space knowledge))
+      ($novelty_g         (getGoalQwestor $space novelty))
+      ($success_brk_g     (getGoalQwestor $space success_breakthrough))
+      ($coherence_g       (getGoalQwestor $space coherence))
+      ($originality_g     (getGoalQwestor $space originality))
+      ($social_g          (getGoalQwestor $space social))
+      ($help_short_g      (getGoalQwestor $space help_short))
+      ($help_long_g       (getGoalQwestor $space help_long))
+      ($over_beneficial_g (getGoalQwestor $space over_beneficial))
+      ($over_safety_g     (getGoalQwestor $space over_safety))
+      ($over_honesty_g    (getGoalQwestor $space over_honesty))
 
-      ; read modulators from Qwestor space  
-      ($m_val  (getMod $space m_valence))
-      ($m_ar   (getMod $space m_arousal))
-      ($m_app  (getMod $space m_approach))
-      ($m_res  (getMod $space m_resolution))
-      ($m_thr  (getMod $space m_threshold))
-      ($m_sec  (getMod $space m_securing))
+      ; Read 13 modulators from Qwestor space 
+      ($m_urg      (getMod $space m_urgency))
+      ($m_res      (getMod $space m_resolution))
+      ($m_usr_exp  (getMod $space m_user_expertise))
+      ($m_thr      (getMod $space m_threshold))
+      ($m_top_fam  (getMod $space m_topic_familiarity))
+      ($m_fail_war (getMod $space m_failure_wariness))
+      ($m_sec      (getMod $space m_securing))
+      ($m_app      (getMod $space m_approach))
+      ($m_ar       (getMod $space m_arousal))
+      ($m_risk_av  (getMod $space m_risk_aversion))
+      ($m_err_tol  (getMod $space m_error_tolerance))
+      ($m_creat    (getMod $space m_creativity))
+      ($m_val      (getMod $space m_valence))
 
-      ; build OpenPSI goal vector  
-      ($gInd   (eval (clampToUnitInterval $over_safety)))
-      ($gTrans (eval (clampToUnitInterval (/ (+ $novelty_g $breakthrough_g) 2.0))))
-      ($gHelp  (eval (clampToUnitInterval (/ (+ $help_short_g $help_long_g) 2.0))))
-      ($gCurio (eval (clampToUnitInterval $knowledge_g)))
-      ($gNovel (eval (clampToUnitInterval $novelty_g)))
-      ($gSelf  (eval (clampToUnitInterval $success_moderate_g)))
+      ; Build OpenPSI goal vector (8) 
+      ($gInd   (eval (clampToUnitInterval $over_safety_g)))
+      ($gTrans (eval (clampToUnitInterval $success_brk_g)))
+      ($gHelp  (eval (clampToUnitInterval (/ (+ (+ $help_short_g $help_long_g) $over_beneficial_g) 3.0))))
+      ($gCurio (eval (clampToUnitInterval (/ (+ $knowledge_g $coherence_g) 2.0))))
+      ($gNovel (eval (clampToUnitInterval (/ (+ $novelty_g $originality_g) 2.0))))
+      ($gSelf  (eval (clampToUnitInterval (/ (+ (+ $efficiency_g $accuracy_g) $success_mod_g) 3.0))))
       ($gEthic (eval (clampToUnitInterval $over_honesty_g)))
       ($gSoc   (eval (clampToUnitInterval $social_g)))
 
-      ; build OpenPSI modulator vector  
+      ; Build OpenPSI modulator vector (6) 
       ; valence: map Qwestor's [-1,1] to OpenPSI's [0,1]
       ($val_openpsi (eval (clampToUnitInterval (* (+ $m_val 1.0) 0.5))))
+      
+      ; arousal: average of arousal and urgency
+      ($ar_openpsi  (eval (clampToUnitInterval (/ (+ $m_ar $m_urg) 2.0))))
+      
+      ; approach: average of approach and creativity
+      ($app_openpsi (eval (clampToUnitInterval (/ (+ $m_app $m_creat) 2.0))))
+      
+      ; resolution: average of resolution, topic familiarity, and user expertise
+      ($res_openpsi (eval (clampToUnitInterval (/ (+ (+ $m_res $m_top_fam) $m_usr_exp) 3.0))))
+      
+      ; threshold: average of threshold and error tolerance
+      ($thr_openpsi (eval (clampToUnitInterval (/ (+ $m_thr $m_err_tol) 2.0))))
+      
+      ; securing: average of securing, failure wariness, and risk aversion
+      ($sec_openpsi (eval (clampToUnitInterval (/ (+ (+ $m_sec $m_fail_war) $m_risk_av) 3.0))))
     )
     (motivation
       ($gInd $gTrans $gHelp $gCurio $gNovel $gSelf $gEthic $gSoc)
-      ($val_openpsi $m_ar $m_app $m_res $m_thr $m_sec)
+      ($val_openpsi $ar_openpsi $app_openpsi $res_openpsi $thr_openpsi $sec_openpsi)
     )
   )
 )
