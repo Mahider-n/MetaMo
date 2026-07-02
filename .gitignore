@@ -3,3 +3,6 @@
 **/venv/
 improvements.md
 **/docs/
+logs/
+sessions/
+eval/

@@ -94,7 +94,7 @@ def _calibrate_action_signals(
 def parse_with_gemini(
     query: str,
     api_key: str,
-    model: str = "gemini-2.5-flash",
+    model: str = "gemini-3.1-flash-lite",
 ) -> dict[str, Any] | None:
 
     try:
@@ -142,7 +142,7 @@ def parse_with_gemini(
             ],
             "generationConfig": {
                 "temperature": 0.0,
-                "maxOutputTokens": 1024,  # FIX: was 500, too low for full JSON
+                "maxOutputTokens": 300,  
                 "responseMimeType": "application/json"
             }
         }
@@ -303,7 +303,7 @@ def wrap_parser(query):
     load_dotenv()
 
     api_key = os.getenv("GEMINI_API_KEY")
-    model_name = "gemini-2.5-flash"
+    model_name = "gemini-3.1-flash-lite"
 
     max_attempts = 3
     for attempt in range(1, max_attempts + 1):
@@ -314,7 +314,7 @@ def wrap_parser(query):
             break
 
         if attempt < max_attempts:
-            wait = 0.5 * attempt
+            wait = 10
             print(f"Retrying in {wait}s...")
             time.sleep(wait)
 
