@@ -9,10 +9,10 @@
     (let*
         (
             ($oldState (match $space ($g $m $a) ($g $m $a)))
-            ($_ (remove-atom $space $oldState))
-            ($_ (add-atom $space ($newGoals $newMods $newAntiGoals)))
+            ($_ (remove-atom $space $oldState)) 
+            ($_(add-atom $space ($newGoals $newMods $newAntiGoals)))
         )
-        $space
+        "Space updated sucessfully"
     )
 )
 
@@ -100,3 +100,24 @@
     (updateState $space $newGoals $newMods $anti_goals)
   )
 )
+
+; sessionRetrival
+;
+; Retrieves the previously stored user queries for a specific
+; session from the session memory backend.
+
+(= (sessionRetrival (sessionId))
+   (let* (
+      ($rw_res (py-call (session_short.get_session_queries (sessionId))))
+      ($final_res (parse $rw_res))
+   )
+   $final_res)
+)
+; sessionQueries
+;
+; Convenience wrapper around sessionRetrival.
+; Automatically retrieves the query history for the
+; currently active session using the sessionId atom.
+
+(= (sessionQueries) (sessionRetrival (sessionId)))
+ 

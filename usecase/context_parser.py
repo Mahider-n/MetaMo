@@ -8,14 +8,17 @@ import time
 
 
 def _clamp01(x: float) -> float:
+    """Clamp a numeric value into the 0.0 to 1.0 range."""
     return max(0.0, min(1.0, x))
 
 
 def _clamp11(x: float) -> float:
+    """Clamp a numeric value into the -1.0 to 1.0 range."""
     return max(-1.0, min(1.0, x))
 
 
 def _coerce_bool(value: Any) -> Optional[bool]:
+    """Convert common truthy and falsy values into a boolean when possible."""
     if isinstance(value, bool):
         return value
 
@@ -35,9 +38,7 @@ def _coerce_bool(value: Any) -> Optional[bool]:
 
 
 def _extract_json(text: str) -> dict:
-    """
-    Robust JSON extraction for Gemini responses.
-    """
+    """Extract a JSON object from Gemini output that may include markdown fences."""
 
     if not isinstance(text, str):
         print(f"Warning: _extract_json received non-string: {type(text)}")
@@ -83,6 +84,7 @@ def _calibrate_action_signals(
     intent_type: str,
     reflective_intent: float,
 ) -> tuple[float, float, float]:
+    """Normalize action-related signals for the inferred intent and ambiguity level."""
 
     return (
         _clamp01(needs_external_evidence),
@@ -90,13 +92,12 @@ def _calibrate_action_signals(
         _clamp01(needs_multi_source_integration),
     )
 
-
 def parse_with_gemini(
     query: str,
     api_key: str,
-    model: str = "gemini-2.5-flash",
+    model: str = "gemini-3.1-flash-lite",
 ) -> dict[str, Any] | None:
-
+    """Call the Gemini API and parse its JSON response into a normalized context dictionary."""
     try:
 
         url = (
@@ -142,7 +143,7 @@ def parse_with_gemini(
             ],
             "generationConfig": {
                 "temperature": 0.0,
-                "maxOutputTokens": 1024,  # FIX: was 500, too low for full JSON
+                "maxOutputTokens": 300,  
                 "responseMimeType": "application/json"
             }
         }
@@ -297,13 +298,12 @@ def parse_with_gemini(
 
         return None
 
-
 def wrap_parser(query):
 
     load_dotenv()
 
     api_key = os.getenv("GEMINI_API_KEY")
-    model_name = "gemini-2.5-flash"
+    model_name = "gemini-3.1-flash-lite"
 
     max_attempts = 3
     for attempt in range(1, max_attempts + 1):
@@ -314,7 +314,7 @@ def wrap_parser(query):
             break
 
         if attempt < max_attempts:
-            wait = 0.5 * attempt
+            wait = 10
             print(f"Retrying in {wait}s...")
             time.sleep(wait)
 

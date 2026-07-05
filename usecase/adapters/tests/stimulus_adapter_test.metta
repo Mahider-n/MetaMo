@@ -13,9 +13,9 @@
     (intent_type factual) (reflective_intent 0.1) (verify_request 0.0) 
     (needs_external_evidence 0.0) (needs_task_plan 0.0) 
     (needs_multi_source_integration 0.0) (valence 0.0)
-  ))
-  ((novelty 0.08499999999999999) (conduciveness 0.76) (risk 0.009999999999999998) (effort 0.04000000000000001))
-)
+	  ))
+	  ((novelty 0.06999999999999999) (conduciveness 0.6600000000000001) (risk 0.009999999999999998) (effort 0.020000000000000004))
+	)
 
 !(test
   (projectStimulus (
@@ -24,9 +24,9 @@
     (intent_type factual) (reflective_intent 0.0) (verify_request 0.0) 
     (needs_external_evidence 0.0) (needs_task_plan 0.0) 
     (needs_multi_source_integration 0.0) (valence -1.0)
-  ))
-  ((novelty 0.4) (conduciveness 0.3) (risk 0.1) (effort 0))
-)
+	  ))
+	  ((novelty 0.3) (conduciveness 0.2) (risk 0.1) (effort 0))
+	)
 
 !(test
   (projectStimulus (
@@ -35,9 +35,9 @@
     (intent_type factual) (reflective_intent 1.0) (verify_request 1.0) 
     (needs_external_evidence 1.0) (needs_task_plan 1.0) 
     (needs_multi_source_integration 1.0) (valence 1.0)
-  ))
-  ((novelty 0.6) (conduciveness 0.4) (risk 1) (effort 1))
-)
+	  ))
+	  ((novelty 0.7) (conduciveness 0) (risk 1) (effort 1))
+	)
 
 !(test
   (projectStimulus (
@@ -46,9 +46,9 @@
     (intent_type factual) (reflective_intent 0.0) (verify_request 0.0) 
     (needs_external_evidence 0.0) (needs_task_plan 0.0) 
     (needs_multi_source_integration 0.0) (valence 1.0)
-  ))
-  ((novelty 0) (conduciveness 0.9) (risk 0) (effort 0))
-)
+	  ))
+	  ((novelty 0) (conduciveness 0.8) (risk 0) (effort 0))
+	)
 
 !(test
   (getStimulusValues

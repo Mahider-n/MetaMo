@@ -35,8 +35,19 @@
 	0.60
 )
 
-; findByKey: returns the first matching value in a pair list.
+; getAntiGoal: reads the requested anti-goal value from the current space.
 !(test
-	(findByKey novelty ((efficiency 0.60) (novelty 0.46) (coherence 0.58)))
-	0.46
+	(getAntiGoal &space rabbit_hole)
+	0.28
+)
+; matchAntiGoalValue: returns the canonical pair for a known anti-goal name.
+!(test 
+	(matchAntiGoalValue redundant 
+	(
+        (hallucinate 0.35)
+        (redundant   0.30)
+        (rabbit_hole 0.28)
+        (premature   0.30)
+    ))
+    (redundant 0.3)
 )
