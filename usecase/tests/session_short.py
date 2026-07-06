@@ -27,7 +27,7 @@ SESSIONS = [
             "act_clarify",
         ],
         "acceptable_actions": [
-            ["act_search"],
+            [],
             [],
             [],
             ["act_think"],
