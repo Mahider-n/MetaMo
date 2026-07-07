@@ -32,7 +32,7 @@
 ;
 ; Returns: (stimulus novelty conduciveness risk effort)
 
-
+(: contextToStimulus (-> Expression Expression))
 (= (contextToStimulus $context-list)
   (let*
     (
@@ -103,13 +103,13 @@
   )
 )
 
+(: projectStimulus (-> Expression Expression))
 (= (projectStimulus $context-list)
   (let (stimulus $vals) (contextToStimulus $context-list) $vals)
 )
 
 ; getStimulusValues
 ; Extracts the raw stimulus values from a stimulus atom
-
 (= (getStimulusValues (stimulus $stimulus-list))
   (stimulus (
     (findByKey novelty $stimulus-list)

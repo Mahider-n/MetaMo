@@ -1,3 +1,4 @@
+!(import! &self ../../anti_goal_helpers)
 !(import! &self ../../utils)  
 !(import! &self ../qwestor_actions)
 
@@ -50,6 +51,12 @@
     (0.30 0.65 0.65 0.75 0.50 0.75 0.45 0.55)
     0.18
     (0.00 0.04 0.03 0.03 0.02 0.04 0.02 0.03))
+)
+
+; getQwestorAntiGoalExposureValue: fetches the exposure vector through the
+!(test
+  (getQwestorAntiGoalExposureValue act_respond)
+  (0.45 0.15 0.05 0.65)
 )
 
 ; Tests that context-based candidate filtering returns the correct action subset

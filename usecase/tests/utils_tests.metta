@@ -1,3 +1,4 @@
+!(import! &self ../anti_goal_helpers)
 !(import! &self ../utils)
 !(import! &self ../config)
 

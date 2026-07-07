@@ -95,6 +95,7 @@ usecase/
 ├─ main-loop.metta                → runQwestor / qwestorLoop / qwestorLoopFromList
 ├─ session_helpers.metta          → session persistence glue (metta-side)
 ├─ session_store.py               → session persistence glue (python-side, JSON files)
+├─ anti_goal_helpers.metta        → anti-goal lookup and action exposure helpers
 └─ utils.metta                    → generic helpers (clamping, key lookup, accessors)
 ```
 

@@ -20,6 +20,24 @@
 ;   - act_decompose: high helpfulness/self-improvement for ordered plans
 ;   - act_think: high self-improvement/novelty for reflective reasoning
 ;   - act_synthesize: balanced integration across sources/viewpoints
+;; Qwestor wrapper definitions
+
+(: QwestorActionType Type)
+(: QwestorAction
+   (-> Symbol ActionType QwestorActionType))
+
+(: QwestorAntiGoalExposureType Type)
+(: QwestorAntiGoalExposure
+   (-> Symbol Expression QwestorAntiGoalExposureType))
+
+(: qwestorCandidatesForSpace
+   (-> Atom Expression))
+
+(: qwestorCandidatesForContext
+   (-> Expression Expression))
+
+(: qwestorCandidatesForContextAndSpace
+   (-> Atom Expression Expression))
 
 (QwestorAction act_respond
   (action act_respond
