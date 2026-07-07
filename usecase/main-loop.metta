@@ -1,3 +1,4 @@
+
 ; Qwestor Main Loop
 ;
 ; Full pipeline:
@@ -10,7 +11,7 @@
 ;      next motivation state, and stimulus values
 ;
 ; Entry point:
-;   (qwestorCycle &space context-list)
+;   (runQwestor &space query)
 ;
 ; Returns:
 ;   (qwestor-result
@@ -21,13 +22,13 @@
 ;   )
 
 
+!(import! &self anti_goal_helpers)
 !(import! &self utils)
 !(import! &self config)
 !(import! &self "context_parser.py")
 !(import! &self adapters/state_bridge)
 !(import! &self adapters/stimulus_adapter)
 !(import! &self adapters/qwestor_actions)
-
 
 !(import! &self "../core/helpers.py")
 !(import! &self ../core/helper)
@@ -44,19 +45,18 @@
 !(import! &self ../dynamics/coherence)
 !(import! &self ../main/main)
 
+!(import! &self "tests/session_short.py")
+!(import! &self "../llm/metta_bridge.py")
+!(import! &self ../llm/llm)
 !(import! &self "session_store.py")
-!(import! &self "io_bridge.py")
+!(import! &self "metrics/qwestor_eval.py")
+!(import! &self "../applications/io_bridge.py")
 !(import! &self session_helpers)
 
-!(import! &self ../llm/llm)
-!(import! &self "../llm/metta_bridge.py")
-
-
-; Initialize a new reasoning space for Qwestor
+(= (sessionId) "session_n")
 
 !(bind! &space (new-space))
 
-(= (sessionId) qwestor_session_a)
 
 !(if (py-call (session_store.has_session (sessionId)))
     (addState &space (
@@ -66,7 +66,28 @@
     (addState &space ((default-goals) (default-mods) (default-anti-goals)))
 )
 
- 
+
+; Score each candidate in the same decision context that drives action choice.
+(= (qwestorCandidateScoresForState $bimonad $decision-state $candidates)
+  (if (== $candidates ())
+      ()
+      (let*
+        (
+          (($candidate $rest) (decons $candidates))
+          ($score (eval (scoreCandidate (bimonadDecision $bimonad) $decision-state $candidate)))
+          ($entry (action-score (actionId $candidate) $score))
+        )
+        (cons-atom $entry (qwestorCandidateScoresForState $bimonad $decision-state $rest))
+      )
+  )
+)
+
+(= (qwestorCandidateScores $bimonad $state $stimulus $candidates)
+  (let $decision-state (decisionContext $bimonad $state $stimulus)
+    (qwestorCandidateScoresForState $bimonad $decision-state $candidates)
+  )
+)
+
 
 ; runQwestor
 ; Main function: full pipeline from user query to ranked actions and
@@ -105,10 +126,16 @@
 
       ; Step 5 ─ Retrieve candidate actions for Qwestor
 
-      ($candidates (qwestorCandidates))
+      ($candidates (qwestorCandidatesForContextAndSpace $space $context-list))
       ($_ (println! ("[STEP 5] candidates: " $candidates)))
 
       ; Step 6 ─ Execute full MetaMo cycle
+
+      ($bimonad (eval (defaultMetaMoBimonad)))
+      ($_ (println! ("bimonad: " $bimonad)))
+
+      ($stimulus-cycle (eval (integrationStimulus $stimulus-final)))
+      ($_ (println! (" stimulus-cycle: " $stimulus-cycle)))
 
       ($cycle-result
         (runMetaMoCycleDefault
@@ -116,7 +143,7 @@
           ; Single subsystem (Qwestor) for now, but can be extended to multiple
           ((subsystemState qwestor $current-motiv))
           (eval (integrationStimulus $stimulus-final))
-          (eval (qwestorCandidates))
+          $candidates
           ()  
           ())
       )
@@ -143,16 +170,24 @@
       ($_ (injectMotivation $space $next-motiv))
 
       ($next-goals (motivationGoals $next-motiv))
+      ($_ (println! ("next-goals: " $next-goals)))
       ($gInd   (index-atom $next-goals 0))
+      ($_ (println! ("gInd: " $gInd)))
+
       ($gTrans (index-atom $next-goals 1))
+      ($_ (println! ("gTrans " $gTrans)))
+
       ($answer (llmGenerateFinalResponse $query $action-name $gInd $gTrans))
       ($_ (println! ("\nAssistant: " $answer)))
 
-      ; Step 10 ─ Compute merged target for candidate re-scoring
-      ; Needed for transparency / ranked scoring of all candidates
+      ; Step 10 ─ Compute merged target and decision-context candidate scores
+      ; Scores explain the action choice and feed the JSON evaluation metrics.
 
       ($merged-target (cycleMergedTarget $cycle-result))
       ($_ (println! ("[STEP 10] merged-target: " $merged-target)))
+      ($candidate-scores (qwestorCandidateScores $bimonad $current-motiv $stimulus-cycle $candidates))
+      ($_ (println! ("[STEP 10] candidate-scores: " $candidate-scores)))
+      ($_ (py-call (qwestor_eval.record_turn (sessionId) $query $action-name $answer $candidate-scores $context-list $stimulus-final)))
 
       ; Step 11 ─ Construct final Qwestor result object
 
@@ -172,68 +207,67 @@
   )
 )
 
-
-; saveCurrentSession
-; Saves the current motivation state (goals, mods, anti-goals) of the space
-; to persistent storage using the session_store.
 (= (saveCurrentSession $space)
     (let*
         (
-            ; Extract the state components from the current space.
             ($state (match $space ($g $m $a) ($g $m $a)))
             ($goals (cdr-atom (index-atom $state 0)))
             ($mods  (cdr-atom (index-atom $state 1)))
             ($anti  (cdr-atom (index-atom $state 2)))
         )
-        ; Call Python function to save the session data.
         (py-call (session_store.save_session (sessionId) $goals $mods $anti))
     )
 )
 
-; qwestorLoop
-; The main interactive loop for Qwestor.
-; Continues processing user queries until "quit" or "exit" is entered.
 (= (qwestorLoop $space $query)
     (if (or (== $query quit) (== $query exit))
-        ; If user wants to quit, save the current session state.
         (saveCurrentSession $space)
         (let* (
-                ; Run the main Qwestor pipeline for the current query.
                 ($turn-result (runQwestor $space $query))
                 ($turn-action (index-atom $turn-result 0))
                 ($turn-answer (index-atom $turn-result 1))
-                ; Log the current turn's details.
                 ($_ (py-call (session_store.log_turn (sessionId) $query $turn-action $turn-answer)))
             )
-            ; Recursively call qwestorLoop for the next user input.
             (qwestorLoop $space (py-call (io_bridge.read_user_input "\nYou: ")))
         )
     )
 )
 
-; qwestorLoopFromList
-; Processes a list of queries non-interactively.
-; Useful for automated testing or processing predefined scenarios.
 (= (qwestorLoopFromList $space $queries)
     (if (== $queries ())
-        ; If the query list is empty, save the session and terminate.
         (saveCurrentSession $space)
         (let* (
-                ; Deconstruct the list to get the current query and the rest.
-                (($query $rest) (decons-atom $queries))
-                ; Run Qwestor for the current query.
-                ($turn-result (runQwestor $space $query))
-                ($turn-action (index-atom $turn-result 0))
-                ($turn-answer (index-atom $turn-result 1))
-                ; Log the current turn.
-                ($_ (py-call (session_store.log_turn (sessionId) $query $turn-action $turn-answer)))
-            )
-            ; Recursively call qwestorLoopFromList with the remaining queries.
+            ($_ (println! ("All Queries in the given session: " $queries)))
+            (($query $rest) (decons $queries))
+            ($_ (println! ("Processing query: " $query)))
+            ($turn-result (runQwestor $space $query))
+            ($turn-action (index-atom $turn-result 0))
+            ($turn-answer (index-atom $turn-result 1))
+            ($_ (py-call (session_store.log_turn (sessionId) $query $turn-action $turn-answer)))
+            ($_ (println! ("Turn result: " $turn-result)))
+        )
             (qwestorLoopFromList $space $rest)
         )
     )
 )
 
+; TEST 1: Session Replay from Stored Queries
+; Replays all queries associated with the current session ID.
 
-; Example execution: process a query 
-!(qwestorLoop &space (py-call (io_bridge.read_user_input "\nYou: ")))
+!(qwestorLoopFromList &space (sessionQueries))
+
+; TEST 2: Interactive Qwestor loop
+; Starts the interactive conversation loop with an initial query.
+; After each response, the system prompts for additional user input.
+;   - Motivation state updates persist across turns
+;   - Session state and logs are saved on exit/quit
+
+; (qwestorLoop &space "Decompose this into a 6-step plan to compare two algorithms")
+
+; TEST 3: Single-turn Qwestor execution
+; Executes exactly one Qwestor cycle and returns the selected
+; action and generated response.
+; Intended for rapid testing/debugging of the reasoning pipeline
+; without entering the conversation loop.
+
+; (runQwestor &space "Can I rely on this exact statistic without checking sources?")

@@ -6,7 +6,6 @@
 
 !(addState &space ((default-goals) (default-mods) (default-anti-goals)))
 
-
 ; motivationSummary: unpacks a motivation atom into a readable pair-list
 !(test
   (motivationSummary (motivation (0.65 0.44 0.55 0.52 0.46 0.62 0.65 0.58)
@@ -41,7 +40,7 @@
 !(test
   (projectToMotivation &space)
   (motivation
-    (0.65 0.45 0.50 0.52 0.46 0.62 0.65 0.58)
-    (0.50 0.40 0.40 0.40 0.30 0.10)
+    (0.65 0.44 0.5333333333333333 0.55 0.47 0.64 0.65 0.58)
+    (0.5 0.30000000000000004 0.42500000000000004 0.4666666666666666 0.375 0.20000000000000004)
   )
 )

@@ -32,66 +32,70 @@
 ;
 ; Returns: (stimulus novelty conduciveness risk effort)
 
-
+(: contextToStimulus (-> Expression Expression))
 (= (contextToStimulus $context-list)
   (let*
     (
       ; extract signals  
-      ($complexity   (findByKey complexity               $context-list))
-      ($ambiguity  (findByKey ambiguity                $context-list))
-      ($threshold  (findByKey threshold                $context-list))
-      ($familiarity_signal  (findByKey topic_familiarity       $context-list))
-      ($failure_signal   (findByKey failure_signal           $context-list))
-      ($reflective_intent   (findByKey reflective_intent        $context-list))
-      ($valence  (findByKey valence                  $context-list))
-      ($needs_external_evidence  (findByKey needs_external_evidence  $context-list))
-      ($task (findByKey needs_task_plan          $context-list))
-      ($ms   (findByKey needs_multi_source_integration $context-list))
-      ($verify_request   (findByKey verify_request           $context-list))
-      ($urgency  (findByKey urgent                  $context-list))
+      ($complexity              (findByKey complexity               $context-list))
+      ($ambiguity               (findByKey ambiguity                $context-list))
+      ($threshold               (findByKey threshold                $context-list))
+      ($familiarity_signal      (findByKey topic_familiarity       $context-list))
+      ($failure_signal          (findByKey failure_signal           $context-list))
+      ($reflective_intent       (findByKey reflective_intent        $context-list))
+      ($valence                 (findByKey valence                  $context-list))
+      ($needs_external_evidence (findByKey needs_external_evidence  $context-list))
+      ($task                    (findByKey needs_task_plan          $context-list))
+      ($ms                      (findByKey needs_multi_source_integration $context-list))
+      ($verify_request          (findByKey verify_request           $context-list))
+      ($urgency                 (findByKey urgent                  $context-list))
 
-      ; Novelty  
-      ; High novelty = unfamiliar + complex + reflective + externally-driven
+      ; NOVELTY  
+      ; Boosted strictly by external evidence requirement to favor act_search
+      ($ev_boost (if (> $needs_external_evidence 0.7) 0.30 0.0))
       ($novelty
         (eval (clampToUnitInterval
-          (+  (* 0.40 (- 1.0 $familiarity_signal))
+          (+  (* 0.30 (- 1.0 $familiarity_signal))
             (+ (* 0.25 $complexity)
-              (+ (* 0.20 $reflective_intent)
-                 (* 0.15 $needs_external_evidence))))
+              (+ (* 0.15 $reflective_intent)
+                 $ev_boost)))
         )))
 
-      ; Conduciveness  
-      ; High conduciveness = familiar territory, low ambiguity, positive mood
-      ($val_norm (eval (clampToUnitInterval (* (+ $valence 1.0) 0.5))))
+      ; CONDUCIVENESS  
+      ; Tanked by verify_request (failure state) and ambiguity (confusion state)
+      ($vr_penalty  (if (== $verify_request 1.0) 0.40 0.0))
+      ($amb_penalty (if (> $ambiguity 0.7) 0.30 0.0))
+      ($val_norm    (eval (clampToUnitInterval (* (+ $valence 1.0) 0.5))))
       ($conduciveness
         (eval (clampToUnitInterval
-          (+  (* 0.40 $familiarity_signal)
-            (+ (* 0.30 (- 1.0 $ambiguity))
-              (+ (* 0.20 $val_norm)
-                 (* -0.20 $failure_signal))))
+          (- (+  (* 0.40 $familiarity_signal)
+               (+ (* 0.20 (- 1.0 $ambiguity))
+                  (+ (* 0.20 $val_norm)
+                     (* -0.20 $failure_signal))))
+             (+ $vr_penalty $amb_penalty))
         )))
 
-      ; Risk  
-      ; Risk = safety threshold + failure history + ambiguity
-      ; verify_request hard-boosts risk (user suspects something is wrong)
-      ($vr_boost (if (== $verify_request 1.0) 0.15 0.0))
+      ; RISK  
+      ; Spiked by verify_request (forces act_verify) and ambiguity (forces act_clarify)
+      ($vr_boost       (if (== $verify_request 1.0) 0.60 0.0))
+      ($amb_risk_boost (if (> $ambiguity 0.7) 0.30 0.0))
       ($risk
         (eval (clampToUnitInterval
-          (+ (* 0.40 $threshold)
-            (+ (* 0.30 $failure_signal)
-              (+ (* 0.20 $ambiguity)
-                 (+ (* 0.10 (- 1.0 $familiarity_signal))
-                    $vr_boost))))
+          (+ (* 0.30 $threshold)
+            (+ (* 0.20 $failure_signal)
+              (+ (* 0.10 (- 1.0 $familiarity_signal))
+                 (+ $vr_boost $amb_risk_boost))))
         )))
 
-      ; Effort  
-      ; Effort = complexity + multi-source + planning + ambiguity
+      ; EFFORT  
+      ; Spiked by task_plan (forces act_decompose) and multi_source (forces act_synthesize)
+      ($task_boost (if (> $task 0.8) 0.50 0.0))
+      ($ms_boost   (if (> $ms 0.8) 0.40 0.0))
       ($effort
         (eval (clampToUnitInterval
-          (+ (* 0.40 $complexity)
-            (+ (* 0.25 $ms)
-              (+ (* 0.20 $task)
-                 (* 0.15 $ambiguity))))
+          (+ (* 0.20 $complexity)
+            (+ (* 0.10 $ambiguity)
+               (+ $task_boost $ms_boost)))
         )))
     )
     
@@ -99,13 +103,13 @@
   )
 )
 
+(: projectStimulus (-> Expression Expression))
 (= (projectStimulus $context-list)
   (let (stimulus $vals) (contextToStimulus $context-list) $vals)
 )
 
 ; getStimulusValues
 ; Extracts the raw stimulus values from a stimulus atom
-
 (= (getStimulusValues (stimulus $stimulus-list))
   (stimulus (
     (findByKey novelty $stimulus-list)

@@ -36,7 +36,6 @@
       (index-atom $pair 1)
     )
 )
-
 ; Clamp a numeric value to [0,1].
 ; Equivalent to Python's clamp_to_unit_interval function.
 
