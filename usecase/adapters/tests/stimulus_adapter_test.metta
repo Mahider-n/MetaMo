@@ -36,7 +36,7 @@
     (needs_external_evidence 1.0) (needs_task_plan 1.0) 
     (needs_multi_source_integration 1.0) (valence 1.0)
 	  ))
-	  ((novelty 0.7) (conduciveness 0) (risk 1) (effort 1))
+    ((novelty 0.7) (conduciveness 0.10000000000000003) (risk 0.8) (effort 1))
 	)
 
 !(test
