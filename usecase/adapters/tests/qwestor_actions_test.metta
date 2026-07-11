@@ -64,7 +64,7 @@
 ; search and planning scenarios.
 !(test
   (qwestorCandidatesForContext
-    ((ambiguity 0.0) (threshold 0.2) (failure_signal 0.0) (verify_request 0.0)
+    ((ambiguity 0.0) (threshold 0.2) (failure_signal 0.0) (verify_request 0)
      (needs_external_evidence 0.0) (needs_task_plan 0.0)
      (needs_multi_source_integration 0.0) (reflective_intent 0.2) (complexity 0.2)))
   ((getQwestorActionValue act_respond)
@@ -73,7 +73,7 @@
 
 !(test
   (qwestorCandidatesForContext
-    ((ambiguity 0.0) (threshold 0.2) (failure_signal 0.0) (verify_request 0.0)
+    ((ambiguity 0.0) (threshold 0.2) (failure_signal 0.0) (verify_request 0)
      (needs_external_evidence 0.9) (needs_task_plan 0.0)
      (needs_multi_source_integration 0.8) (reflective_intent 0.7) (complexity 0.6)))
   ((getQwestorActionValue act_search)
@@ -82,7 +82,7 @@
 
 !(test
   (qwestorCandidatesForContext
-    ((ambiguity 0.0) (threshold 0.2) (failure_signal 0.0) (verify_request 0.0)
+    ((ambiguity 0.0) (threshold 0.2) (failure_signal 0.0) (verify_request 0)
      (needs_external_evidence 0.9) (needs_task_plan 0.9)
      (needs_multi_source_integration 0.8) (reflective_intent 0.8) (complexity 0.8)))
   ((getQwestorActionValue act_decompose)
