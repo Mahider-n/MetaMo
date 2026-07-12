@@ -73,7 +73,7 @@
 
 (QwestorAction act_decompose
   (action act_decompose
-    (0.35 0.70 0.80 0.35 0.20 0.80 0.45 0.35)
+    (0.35 0.70 0.95 0.35 0.20 0.85 0.45 0.35) 
     0.12
     (0.01 0.05 0.03 0.02 0.01 0.05 0.01 0.02)
   )
@@ -81,7 +81,7 @@
 
 (QwestorAction act_think
   (action act_think
-    (0.35 0.55 0.45 0.75 0.75 0.95 0.35 0.25)
+    (0.35 0.55 0.45 0.75 0.75 0.95 0.35 0.25) 
     0.18
     (0.01 0.06 0.00 0.04 0.04 0.06 0.01 0.00)
   )
@@ -256,7 +256,7 @@
       ($reflective_intent       (findByKey reflective_intent $context-list))
       ($complexity              (findByKey complexity $context-list))
     )
-    (if (or (== $verify_request 1.0) (or (> $threshold 0.75) (> $failure_signal 0.65)))
+    (if (or (== $verify_request 1) (or (> $threshold 0.75) (> $failure_signal 0.65)))
         (qwestorVerifyCandidates)
         (if (> $ambiguity 0.65)
             (qwestorClarifyCandidates)

@@ -53,7 +53,7 @@
 !(import! &self "../applications/io_bridge.py")
 !(import! &self session_helpers)
 
-(= (sessionId) "session_n")
+(= (sessionId) "session_a")
 
 !(bind! &space (new-space))
 

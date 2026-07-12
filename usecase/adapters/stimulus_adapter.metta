@@ -63,7 +63,7 @@
 
       ; CONDUCIVENESS  
       ; Tanked by verify_request (failure state) and ambiguity (confusion state)
-      ($vr_penalty  (if (== $verify_request 1.0) 0.40 0.0))
+      ($vr_penalty  (if (== $verify_request 1) 0.40 0.0))
       ($amb_penalty (if (> $ambiguity 0.7) 0.30 0.0))
       ($val_norm    (eval (clampToUnitInterval (* (+ $valence 1.0) 0.5))))
       ($conduciveness
@@ -77,7 +77,7 @@
 
       ; RISK  
       ; Spiked by verify_request (forces act_verify) and ambiguity (forces act_clarify)
-      ($vr_boost       (if (== $verify_request 1.0) 0.60 0.0))
+      ($vr_boost       (if (== $verify_request 1) 0.60 0.0))
       ($amb_risk_boost (if (> $ambiguity 0.7) 0.30 0.0))
       ($risk
         (eval (clampToUnitInterval
@@ -89,8 +89,8 @@
 
       ; EFFORT  
       ; Spiked by task_plan (forces act_decompose) and multi_source (forces act_synthesize)
-      ($task_boost (if (> $task 0.8) 0.50 0.0))
-      ($ms_boost   (if (> $ms 0.8) 0.40 0.0))
+      ($task_boost (if (> $task 0.65) 0.50 0.0))
+      ($ms_boost   (if (> $ms 0.65) 0.40 0.0))
       ($effort
         (eval (clampToUnitInterval
           (+ (* 0.20 $complexity)
