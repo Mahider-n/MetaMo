@@ -83,16 +83,29 @@ usecase/
 │  ├─ qwestor_actions.metta      → the 7 cognitive actions, candidate filtering
 │  ├─ state_bridge.metta         → Qwestor state  ⇄  MetaMo motivation state
 │  └─ stimulus_adapter.metta     → 14-signal context  →  4-value MetaMo stimulus
+├─ eval/
+│  ├─ raw_runs.json              → raw evaluated turns collected during session tests
+│  └─ evaluation_results.json    → global, per-session, and per-action metrics
+├─ logs/
+│  └─ <session_id>.json          → append-only conversational turn logs
 ├─ metrics/
 │  └─ qwestor_eval.py            → logs every turn and scores it against expectations
+├─ plots/
+│  ├─ overall_action_analysis.png → five overall and per-action evaluation plots
+│  └─ per_session_analysis.png    → four session-level evaluation plots
+├─ sessions/
+│  └─ <session_id>.json          → persisted goals, modulators, and anti-goals
 ├─ tests/
 │  ├─ session_helpers_test.metta
 │  ├─ session_short.py           → canned test sessions (queries, expected actions)
 │  └─ utils_tests.metta
 ├─ README.md
+├─ Qwestor–MetaMo Integration Documentation.md
+│                                  → architecture, workflow, and extension guide
 ├─ config.metta                  → default goals, modulators, anti-goals, alpha rates
 ├─ context_parser.py              → LLM-based query → structured-context parser
 ├─ main-loop.metta                → runQwestor / qwestorLoop / qwestorLoopFromList
+├─ plot_evaluation_results.py     → generates  plots in two composite files
 ├─ session_helpers.metta          → session persistence glue (metta-side)
 ├─ session_store.py               → session persistence glue (python-side, JSON files)
 ├─ anti_goal_helpers.metta        → anti-goal lookup and action exposure helpers
@@ -190,7 +203,15 @@ Independent of the MeTTa runtime — every completed turn is logged here via `re
 4. Aggregates per-session and global metrics into `eval/evaluation_results.json`: strict accuracy, soft accuracy, top-3 hit rate, average decision margin between the top two candidates, and a full confusion matrix (expected action × predicted action).
 
 
-### 3.9 `utils.metta`
+### 3.9 `plot_evaluation_results.py`
+Reads `eval/evaluation_results.json` and generates dynamic evaluation charts. It groups the related charts into two composite files under `plots/`:
+
+- `plots/per_session_analysis.png` — strict accuracy by session, strict/soft/top-3 metrics by session, decision margins, and correct-versus-incorrect turn counts.
+- `plots/overall_action_analysis.png` — overall metrics, strict/soft accuracy, expected-versus-predicted action counts, per-action recall, and the confusion matrix.
+
+Every score, count, session, and action shown in the charts is extracted from the current evaluation-results file, so rerunning the session tests and plotting script refreshes both.
+
+### 3.10 `utils.metta`
 Shared low-level helpers used everywhere above: `clampToUnitInterval`, `findByKey` (association-list lookup), `getMod`/`getGoalQwestor`/`getAntiGoal` (typed accessors into the Qwestor space triple), and small list utilities (`addItems`, `decons`-style recursion helpers).
 
 ---
@@ -368,8 +389,16 @@ All the numbers that decide which family of actions gets considered (`ambiguity 
 ### 6.5 Evaluating changes
 After any change to actions, thresholds, or projection formulas:
 1. Run `qwestorLoopFromList` across every session in `tests/session_short.py` .
-2. Inspect `eval/evaluation_results.json` — check `strict_accuracy`, `soft_accuracy`, and especially the `confusion_matrix` for the specific action you changed. A change that fixes one query but silently regresses a different session's expected action will show up there.
-3. Only then consider the change validated — a single hand-checked example (like §5 above) is useful for understanding *why* a decision was made, but the aggregate metrics are what tells whether it's actually an improvement.
+2. Confirm that the completed session tests produced or refreshed `eval/evaluation_results.json`.
+3. From the `usecase/` directory, generate the visual evaluation report:
+
+   ```bash
+   python plot_evaluation_results.py
+   ```
+
+   This creates or refreshes the `plots/` directory containing `per_session_analysis.png` and `overall_action_analysis.png`.
+4. Inspect both the generated plots and `eval/evaluation_results.json` — check `strict_accuracy`, `soft_accuracy`, and especially the `confusion_matrix` for the specific action you changed. 
+5. Only then consider the change validated — a single hand-checked example is useful for understanding *why* a decision was made, but the aggregate metrics are what tells whether it's actually an improvement.
 
 ### 6.6 Extending to multiple subsystems
 `main-loop.metta` already wraps the motivation state into two named subsystems (`qwestor`, `ethics`) even though they share one state in this implementation. If you want a second subsystem with genuinely different goals/modulators (e.g. a separate "safety reviewer" persona), give it its own `(subsystemState name motivation)` entry in the `$states` list passed into `runMetaMoCycleDefault` — the merge/step logic in MetaMo already supports more than one subsystem via `parallelMerge`.
