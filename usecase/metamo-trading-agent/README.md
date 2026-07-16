@@ -70,6 +70,51 @@ Each agent prints one parseable atom per step, and the MetaMo agent's
 line also carries its dominant emotion, all four feeling intensities,
 valence, securing, the two overgoals and the portfolio value.
 
+## Try the agent on your own price data
+
+Any price history works as long as you have a CSV file with a column of closing
+prices. For example, download the historical data of a stock or a cryptocurrency
+from Yahoo Finance as a CSV.
+
+Step 1. Convert the CSV into a scenario. From this folder:
+
+    python3 make_scenario.py csv yourfile.csv mymarket Close
+
+Replace `Close` with the real name of the price column if it differs. The script
+normalizes the first price to 100 and prints a scenario equation.
+
+Step 2. Paste the printed equation into `trading_market.metta`, next to the
+existing scenarios.
+
+Step 3. Add this line at the bottom of `trading_agent.metta`:
+
+    !(startTrader mymarket)
+
+And if you also want the baseline comparison, add this at the bottom of
+`trading_baseline.metta`:
+
+    !(baselineLoop mymarket (initialPortfolio) 1)
+
+Step 4. Run and plot like any other scenario:
+
+    sh /path/to/PeTTa/run.sh trading_agent.metta | tee agent_log.txt
+    sh /path/to/PeTTa/run.sh trading_baseline.metta | tee baseline_log.txt
+    python3 plot_trading_run.py agent_log.txt baseline_log.txt figures
+
+Your market now shows up in the logs and the charts with the agent's trades,
+its portfolio value and its emotions per step.
+
+Two practical tips. Keep the series around 50 to 100 points, since every point
+is a full framework cycle and longer series just take proportionally longer.
+And match the risk gain to your data: the default `RISK_GAIN = 6` in
+`trading_core.metta` is tuned for markets with panic sized moves of ten percent
+or more per step, which fits daily cryptocurrency data. For gentler data such
+as weekly stock closes, raise it to around 12 so the agent perceives danger at
+the right scale. We measured this on real Apple weekly data from 2015 to 2016:
+with the default gain the agent under-reacted, with `RISK_GAIN = 12` it sold
+early in the decline and protected its capital while the market lost 23.6
+percent.
+
 ## How to make the charts
 
 ```
