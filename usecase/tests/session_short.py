@@ -561,4 +561,4 @@ def get_session_queries(session_id: str) -> str:
         if session["session_id"] == session_id:
             queries = " ".join([f'"{q}"' for q in session["queries"]])
             return f"({queries})"
-    return "(queries)"
+    return "()"
