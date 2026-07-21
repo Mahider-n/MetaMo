@@ -550,9 +550,15 @@ SESSIONS = [
 ]
 
 
+def get_session_ids() -> str:
+    """Return every configured session ID as a MeTTa expression."""
+    session_ids = " ".join(f'"{session["session_id"]}"' for session in SESSIONS)
+    return f"({session_ids})"
+
+
 def get_session_queries(session_id: str) -> str:
     for session in SESSIONS:
         if session["session_id"] == session_id:
             queries = " ".join([f'"{q}"' for q in session["queries"]])
             return f"({queries})"
-    return "(queries)"
+    return "()"

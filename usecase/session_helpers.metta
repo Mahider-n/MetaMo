@@ -120,4 +120,82 @@
 ; currently active session using the sessionId atom.
 
 (= (sessionQueries) (sessionRetrival (sessionId)))
- 
+
+;sessionIds
+;Returns all configured session IDs, newly appended sessions are included automatically.
+(= (sessionIds)
+   (let* (
+      ($raw-ids (py-call (session_short.get_session_ids)))
+      ($ids (parse $raw-ids))
+   )
+   $ids)
+)
+
+; Returns the identifier of the currently active session.
+(= (sessionId)
+    (match &session-control (active-session $session-id) $session-id)
+)
+
+; Switches the active session identifier.
+;
+; This only changes which session subsequent save/load operations target.
+; It does NOT modify or erase any persisted session data. Each session's
+; motivation state is stored independently by session_store using the
+; session ID as the persistence key.
+
+(= (setSessionId $session-id)
+    (let* (
+        ($old-session (match &session-control (active-session $old-id) (active-session $old-id)))
+        ($_ (remove-atom &session-control $old-session))
+        ($_ (add-atom &session-control (active-session $session-id)))
+    )
+    $session-id)
+)
+
+; initializeSessionSpace
+;
+; Initializes the shared AtomSpace for the currently active session.
+;
+; If a persisted session exists, its saved goals, modulators, and
+; anti-goals are restored so execution continues from the previous
+; motivational state. Otherwise, a new session is initialized with
+; the default motivation state.
+
+(= (initializeSessionSpace $space)
+  (if (py-call (session_store.has_session (sessionId)))
+    (addState $space (
+        (goal-vector (py-call (session_store.load_goals (sessionId))))
+        (modulator-vector (py-call (session_store.load_mods (sessionId))))
+        (anti-goals (py-call (session_store.load_anti_goals (sessionId))))))
+    (addState $space ((default-goals) (default-mods) (default-anti-goals)))
+  )
+)
+
+; qwestorCandidateScoresForState
+; Score each candidate in the same decision context that drives action choice.
+(= (qwestorCandidateScoresForState $bimonad $decision-state $candidates)
+  (if (== $candidates ())
+      ()
+      (let*
+        (
+          (($candidate $rest) (decons $candidates))
+          ($score (eval (scoreCandidate (bimonadDecision $bimonad) $decision-state $candidate)))
+          ($entry (action-score (actionId $candidate) $score))
+        )
+        (cons-atom $entry (qwestorCandidateScoresForState $bimonad $decision-state $rest))
+      )
+  )
+)
+
+; qwestorCandidateScores
+;
+; Builds the decision context from the current motivation state and
+; stimulus, then evaluates every candidate action within that context.
+; Returns a ranked list of (action-score) atoms used for reporting
+; and evaluation metrics.
+
+(= (qwestorCandidateScores $bimonad $state $stimulus $candidates)
+  (let $decision-state (decisionContext $bimonad $state $stimulus)
+    (qwestorCandidateScoresForState $bimonad $decision-state $candidates)
+  )
+)

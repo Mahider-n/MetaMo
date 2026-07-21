@@ -53,40 +53,10 @@
 !(import! &self "../applications/io_bridge.py")
 !(import! &self session_helpers)
 
-(= (sessionId) "session_a")
-
+!(bind! &session-control (new-space))
+!(add-atom &session-control (active-session "session_a"))
 !(bind! &space (new-space))
-
-
-!(if (py-call (session_store.has_session (sessionId)))
-    (addState &space (
-        (goal-vector (py-call (session_store.load_goals (sessionId))))
-        (modulator-vector (py-call (session_store.load_mods (sessionId))))
-        (anti-goals (py-call (session_store.load_anti_goals (sessionId))))))
-    (addState &space ((default-goals) (default-mods) (default-anti-goals)))
-)
-
-
-; Score each candidate in the same decision context that drives action choice.
-(= (qwestorCandidateScoresForState $bimonad $decision-state $candidates)
-  (if (== $candidates ())
-      ()
-      (let*
-        (
-          (($candidate $rest) (decons $candidates))
-          ($score (eval (scoreCandidate (bimonadDecision $bimonad) $decision-state $candidate)))
-          ($entry (action-score (actionId $candidate) $score))
-        )
-        (cons-atom $entry (qwestorCandidateScoresForState $bimonad $decision-state $rest))
-      )
-  )
-)
-
-(= (qwestorCandidateScores $bimonad $state $stimulus $candidates)
-  (let $decision-state (decisionContext $bimonad $state $stimulus)
-    (qwestorCandidateScoresForState $bimonad $decision-state $candidates)
-  )
-)
+!(initializeSessionSpace &space)
 
 
 ; runQwestor
@@ -251,10 +221,31 @@
     )
 )
 
-; TEST 1: Session Replay from Stored Queries
-; Replays all queries associated with the current session ID.
+; Runs every session. The shared space is
+; reset from that session's saved/default state before qwestorLoopFromList
+; prints every step, answer, and turn result directly to the terminal.
 
-!(qwestorLoopFromList &space (sessionQueries))
+(= (qwestorLoopFromAllSessions $space $session-ids)
+    (if (== $session-ids ())
+        (println! "All configured sessions completed.")
+        (let* (
+            (($session-id $rest) (decons $session-ids))
+            ($_ (setSessionId $session-id))
+            ($_ (println! ("\n========== Starting session: " $session-id " ==========")))
+            ($old-state (match $space ($g $m $a) ($g $m $a)))
+            ($_ (remove-atom $space $old-state))
+            ($_ (initializeSessionSpace $space))
+            ($_ (qwestorLoopFromList $space (sessionQueries)))
+            ($_ (println! ("========== Finished session: " $session-id " ==========\n")))
+        )
+        (qwestorLoopFromAllSessions $space $rest))
+    )
+)
+
+; TEST 1: Session Replay from Stored Queries
+; Replays all queries 
+
+!(qwestorLoopFromAllSessions &space (sessionIds))
 
 ; TEST 2: Interactive Qwestor loop
 ; Starts the interactive conversation loop with an initial query.
