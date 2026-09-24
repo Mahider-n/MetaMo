@@ -1,5 +1,9 @@
 # Verified bounded live setup
 
+Subsequent execution-feedback evidence and the additional Core budget fix are
+documented in [LIVE_CYCLE.md](LIVE_CYCLE.md). The setup results below describe
+the earlier readiness check and retain their original scope.
+
 Verified 24 September 2026. This closes **Task 6's first checklist item**:
 runtime dependencies, provider settings, memory, one test channel, and the
 bounded Task 2 skills/policies. The remaining live-loop acceptance items stay open.

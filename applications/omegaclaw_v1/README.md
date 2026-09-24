@@ -54,6 +54,10 @@ For the verified ASICloud, local-memory and local-test-channel profile, see
 [LIVE_SETUP.md](LIVE_SETUP.md). Run `python3 tools/verify_live_setup.py` from this
 directory to reproduce setup verification with isolated artifacts and real services.
 
+[LIVE_CYCLE.md](LIVE_CYCLE.md) records the subsequent seven-cycle real-bridge
+success, controlled read-failure/recovery and policy-denial demonstration, with
+the required Core budget fix and explicit limits of its serialized host driver.
+
 Use the exact source revisions and workspace structure recorded in
 [DEPENDENCIES.md](DEPENDENCIES.md). Keep `MetaMo/`, `repos/OmegaClaw-Core/`,
 and `repos/petta_lib_chromadb/` inside the same PeTTa workspace. Use the common

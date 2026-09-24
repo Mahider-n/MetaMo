@@ -268,3 +268,13 @@ boundary using the memory adapter's query shape. The boundary fixture supplies
 string concatenation and in-memory storage; it does not establish live memory or
 channel readiness. Subsequent real MiniMax connectivity and bounded setup
 verification are recorded in [LIVE_SETUP.md](LIVE_SETUP.md).
+
+## Native budget overlay — 24 September 2026
+
+The subsequent [live bridge demonstration](LIVE_CYCLE.md) requires the updated
+Core `src/context.metta`: `cfv2-default-budget` evaluates late-loaded
+`maxOutputToken` and `wakeupInterval` getters before storing budget values.
+Otherwise the live host snapshot differs from the bridge's published snapshot
+and configured operations are rejected. `tests/native_budget_test.metta`
+reproduces the old failure; all 49 focused MeTTa files and Core dispatch tests
+pass with the fix. Exact source hashes are retained in the live-cycle report.

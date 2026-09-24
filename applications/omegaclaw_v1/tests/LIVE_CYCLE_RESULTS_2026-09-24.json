@@ -1,0 +1,209 @@
+{
+  "passed": true,
+  "time_utc": "2026-09-24T19:02:56.521216+00:00",
+  "artifacts": "/private/tmp/oc-cycle-vn_p02wa",
+  "run": {
+    "command": [
+      "/Library/Frameworks/Python.framework/Versions/3.9/bin/python3",
+      "/Users/nahomsenay/Hyperclaw-Metamo-Fork/MetaMo/scripts/run-omegaclaw.py",
+      "/private/tmp/oc-cycle-vn_p02wa/cycle.metta",
+      "--report",
+      "/private/tmp/oc-cycle-vn_p02wa/imports.json",
+      "--host-config",
+      "/private/tmp/oc-cycle-vn_p02wa/host.json",
+      "commchannel=local",
+      "provider=ASICloud",
+      "embeddingprovider=Local",
+      "maxSessionCycles=7",
+      "maxOutputToken=512",
+      "sleepInterval=0"
+    ],
+    "exit_code": 0,
+    "timeout": false,
+    "seconds": 48.96,
+    "assertions": 35,
+    "clean": true
+  },
+  "expected_assertions": 35,
+  "trace_records": 13,
+  "frames": [
+    "Frame-20260924T190214658150Z"
+  ],
+  "sources": {
+    "/Users/nahomsenay/Hyperclaw-Metamo-Fork/MetaMo/applications/omegaclaw_v1/adapter.metta": "e91d355b7c7077e98cb1115757ec1b871bf9bc040ba43a4ae3d49af03a1a6452",
+    "/Users/nahomsenay/Hyperclaw-Metamo-Fork/MetaMo/applications/omegaclaw_v1/bridge.metta": "ee3316681495d82b7d36485bf758e3326c31f746f9461ef269d2166ff5f96ca8",
+    "/Users/nahomsenay/Hyperclaw-Metamo-Fork/MetaMo/applications/omegaclaw_v1/candidate_selection.metta": "d3a8ca006032c98384f31d60c92796a68bc702fc34ebc4496cc6f040c6364dfd",
+    "/Users/nahomsenay/Hyperclaw-Metamo-Fork/MetaMo/applications/omegaclaw_v1/commitments.metta": "e65e76da5d0204d66f66f66692da2dfbf98349507c8e93a5a3f9a4f4acdda07f",
+    "/Users/nahomsenay/Hyperclaw-Metamo-Fork/MetaMo/applications/omegaclaw_v1/commitments.pl": "ef3d0fc44cf327e48e55f6a54949d98a25f44c5586a8020f4857a46a76cf849c",
+    "/Users/nahomsenay/Hyperclaw-Metamo-Fork/MetaMo/applications/omegaclaw_v1/composition.metta": "4df2109436ecd77e617ea5d3fb3397986f2b250bd78468318daf0702f43edb02",
+    "/Users/nahomsenay/Hyperclaw-Metamo-Fork/MetaMo/applications/omegaclaw_v1/context_integration.metta": "8cd58201a7ec50e6ba35b5cf04362cb76c0f6eb196cfea374b7a843d13418fe8",
+    "/Users/nahomsenay/Hyperclaw-Metamo-Fork/MetaMo/applications/omegaclaw_v1/contexts/context_accessors.metta": "4909bd70cedbbbfc30159264229d7fb5f118fcdb351ca213f8f7cda33299ddb4",
+    "/Users/nahomsenay/Hyperclaw-Metamo-Fork/MetaMo/applications/omegaclaw_v1/contexts/context_directives.metta": "a5fc1638df774bd5932ab1a6d54c286297db2387c40a81d3ffe2c3cdaccefa0e",
+    "/Users/nahomsenay/Hyperclaw-Metamo-Fork/MetaMo/applications/omegaclaw_v1/contexts/context_policy.metta": "915bc529a37a59c7e666f04c2c56825300ea091f6e7881bd5bf34c4abee00ded",
+    "/Users/nahomsenay/Hyperclaw-Metamo-Fork/MetaMo/applications/omegaclaw_v1/contexts/context_projection.metta": "89b8d5023db2daec76363b2199c9333b061bbc6d94ae9a687e1aed5bbb9e108d",
+    "/Users/nahomsenay/Hyperclaw-Metamo-Fork/MetaMo/applications/omegaclaw_v1/contexts/context_relations.metta": "316e8fb9b0bb52ca4ffc89e54f0e5fae4c33dfced4ad70b50750715f87020631",
+    "/Users/nahomsenay/Hyperclaw-Metamo-Fork/MetaMo/applications/omegaclaw_v1/contexts/context_slices.metta": "bc63441d69850346cdaa52e53645b870dbb023cc2423275504255b76d2244787",
+    "/Users/nahomsenay/Hyperclaw-Metamo-Fork/MetaMo/applications/omegaclaw_v1/contexts/request_admission.metta": "2283339410efeea207f224b7eaa30b42f1b924994c973289e996b001d01e9eb7",
+    "/Users/nahomsenay/Hyperclaw-Metamo-Fork/MetaMo/applications/omegaclaw_v1/contexts/typed_policy.metta": "8f37ad778a2b945fba70ae973af4b7a59818fbfc9d4ae1c39290ae8051f4202b",
+    "/Users/nahomsenay/Hyperclaw-Metamo-Fork/MetaMo/applications/omegaclaw_v1/contracts.metta": "1c9fedbf9788a6cc1db1e696a90a3ceb14178fe19fc4ddd0302d97384663af60",
+    "/Users/nahomsenay/Hyperclaw-Metamo-Fork/MetaMo/applications/omegaclaw_v1/contracts.pl": "74ead3cbc5de6fcaf88a1783ff3015ee1731c7489474f121cf77621b2ecc5904",
+    "/Users/nahomsenay/Hyperclaw-Metamo-Fork/MetaMo/applications/omegaclaw_v1/dispatch.metta": "8a066c3acd2b76c3ada180ae00121204583e74255aadffd39a51da05863f4916",
+    "/Users/nahomsenay/Hyperclaw-Metamo-Fork/MetaMo/applications/omegaclaw_v1/dispatch.pl": "acfbd78790c2a1f8389d8b3659a74d0e4b49d475a93ba0a1cbca2cf0144fbf52",
+    "/Users/nahomsenay/Hyperclaw-Metamo-Fork/MetaMo/applications/omegaclaw_v1/helpers.metta": "c29c60947f0137afed89c72b57c5d7bd29381db5541db50ce514a0f44cb3d6f8",
+    "/Users/nahomsenay/Hyperclaw-Metamo-Fork/MetaMo/applications/omegaclaw_v1/homeostasis.metta": "ae3edec719638523d3571ee37f43e241ec18930d4a913adcdecb64a0f087a584",
+    "/Users/nahomsenay/Hyperclaw-Metamo-Fork/MetaMo/applications/omegaclaw_v1/host_continuation.metta": "1de5a211aab76691a3706b6a62314f3b9794bd6f373ef247a835929baf216218",
+    "/Users/nahomsenay/Hyperclaw-Metamo-Fork/MetaMo/applications/omegaclaw_v1/host_dispatch_config.py": "86bc5322164d3c1dfc01c0d87c8cf1fcdeb53f089a77262f34d48eabac3a0502",
+    "/Users/nahomsenay/Hyperclaw-Metamo-Fork/MetaMo/applications/omegaclaw_v1/host_operations.py": "2e0d3505ecfd835bdab337a1c5a4a0aacaef67ad897423860646113d7b8f402b",
+    "/Users/nahomsenay/Hyperclaw-Metamo-Fork/MetaMo/applications/omegaclaw_v1/host_startup.metta": "060d6cde3691a86ef09fd0d851ee018bf60bd819c361f19372d926654da4f5bd",
+    "/Users/nahomsenay/Hyperclaw-Metamo-Fork/MetaMo/applications/omegaclaw_v1/mode_layer.metta": "f978dd820da042ce3398f4dac70e6dcf265e6d7d49f1592ba3626e088bd593e5",
+    "/Users/nahomsenay/Hyperclaw-Metamo-Fork/MetaMo/applications/omegaclaw_v1/mode_triggers.metta": "cc05b4c24740c6b627dbf81d12ff0fc06245efff8e191314dc57284bf932f9ad",
+    "/Users/nahomsenay/Hyperclaw-Metamo-Fork/MetaMo/applications/omegaclaw_v1/omegaclaw_appraisal.metta": "855ac18958442909475bae99ccb4c69e99abf3d029c444066cc5990430603974",
+    "/Users/nahomsenay/Hyperclaw-Metamo-Fork/MetaMo/applications/omegaclaw_v1/omegaclaw_decision.metta": "04a5855574b1d2dc4017a730e8d5d6929d1a3474a2691d3ee88cbcdc30ddb44f",
+    "/Users/nahomsenay/Hyperclaw-Metamo-Fork/MetaMo/applications/omegaclaw_v1/openpsi_config.metta": "c01f526f1904c45a79060cb7e7b6dfcac4beb9be263cef6a9b336d0f93d36fc9",
+    "/Users/nahomsenay/Hyperclaw-Metamo-Fork/MetaMo/applications/omegaclaw_v1/operation_selection.metta": "8ca86e192fd4243ec7423b10e08814ce06c68d6b2016a815ea784f696b40f474",
+    "/Users/nahomsenay/Hyperclaw-Metamo-Fork/MetaMo/applications/omegaclaw_v1/persistence.metta": "fc1dedf0429c1fdf96f5579cd9031d6105a8af78c64d81888b250e6859ae9909",
+    "/Users/nahomsenay/Hyperclaw-Metamo-Fork/MetaMo/applications/omegaclaw_v1/registry.metta": "4e68b6f4a9ddce44ac78be273470cfd318e1cc0b010820490f97616bb5b4e05a",
+    "/Users/nahomsenay/Hyperclaw-Metamo-Fork/MetaMo/applications/omegaclaw_v1/resurfacing.metta": "53072f47921a437535d7b962ec2cc9dc6f56ab80f6737a03e7e1fe7346d1ab51",
+    "/Users/nahomsenay/Hyperclaw-Metamo-Fork/MetaMo/applications/omegaclaw_v1/run.metta": "85c58fe925be764d92a176ca606c97311034692bbf3eb5405a4bcd680b53b6aa",
+    "/Users/nahomsenay/Hyperclaw-Metamo-Fork/MetaMo/applications/omegaclaw_v1/runtime_support.metta": "79f6628817a78575b27f69e3f94c14394dc583c312111446707f337d06ee33db",
+    "/Users/nahomsenay/Hyperclaw-Metamo-Fork/MetaMo/applications/omegaclaw_v1/scheduling.metta": "5d16e7a9315630fe1dba1cffd9effed00a4f78116a2258a62edfa59e220ebbcf",
+    "/Users/nahomsenay/Hyperclaw-Metamo-Fork/MetaMo/applications/omegaclaw_v1/signals.metta": "b82eca9a5a977fae3e800041ea822f263eed024dfffa7ae5af046d6a66ef3e8d",
+    "/Users/nahomsenay/Hyperclaw-Metamo-Fork/MetaMo/applications/omegaclaw_v1/task_lifecycle.metta": "d92881eb58779630adeae6cf6a7f4e47eec273b5e6b1c33162f93029d6cd06b8",
+    "/Users/nahomsenay/Hyperclaw-Metamo-Fork/MetaMo/applications/omegaclaw_v1/tools/live_cycle.metta": "12be8427a64cd54c3b8e5928177be46f6c626d871b47f58700a62d571006a900",
+    "/Users/nahomsenay/Hyperclaw-Metamo-Fork/MetaMo/applications/omegaclaw_v1/tools/live_cycle_probe.py": "9c60c1937b716c8ab4b5749f1b6a714e0495b2344d0ab67ec14e2d2cf24fd784",
+    "/Users/nahomsenay/Hyperclaw-Metamo-Fork/MetaMo/applications/omegaclaw_v1/tools/verify_live_cycle.py": "8db65d84a941de60130a80628323c9c29a00ad3ccbf4cf51dc05c5c81ef0fbfd",
+    "/Users/nahomsenay/Hyperclaw-Metamo-Fork/MetaMo/applications/omegaclaw_v1/tools/verify_live_setup.py": "d3268812cc9b7e77d20b02532771cb0b22cdf100de1d968176845587d2750286",
+    "/Users/nahomsenay/Hyperclaw-Metamo-Fork/MetaMo/applications/omegaclaw_v1/utils.metta": "71c68e552385a089bb2aaede05eac84989e840746f0f0f79c2d64570c865c5da",
+    "/Users/nahomsenay/Hyperclaw-Metamo-Fork/MetaMo/category/bimonad.metta": "5116b26ed1f09fec9ab72c98feaf622f8d04790ff0696fad0a51523f2a262202",
+    "/Users/nahomsenay/Hyperclaw-Metamo-Fork/MetaMo/category/functors.metta": "11b85507cb6aef4300910782e70ac9d43d5fc9ea3b21004cef9c60fcf200f4e0",
+    "/Users/nahomsenay/Hyperclaw-Metamo-Fork/MetaMo/core/config.metta": "dcba3efe0c6bbb69451bf82d866a7f22eba66ba8ec16746266c48f0b64b87d64",
+    "/Users/nahomsenay/Hyperclaw-Metamo-Fork/MetaMo/core/helper.metta": "e7054576e4c399a9482abfe85dffdd7fe0529575c1eb5d1bfe16f17b5e4337df",
+    "/Users/nahomsenay/Hyperclaw-Metamo-Fork/MetaMo/core/helpers.py": "9d2146ee06072232116b649139b002234676c4b20ec0a008e354e76da4cd8855",
+    "/Users/nahomsenay/Hyperclaw-Metamo-Fork/MetaMo/core/registry.metta": "c418add47bc01215b048a33f69669886a5e54710cb0065aef74ad70cd57f8f6f",
+    "/Users/nahomsenay/Hyperclaw-Metamo-Fork/MetaMo/core/state.metta": "2ce76f38f07494cfa86c0fc7dd8f779367c9623f05f12fddbc25b4bc277f3cf5",
+    "/Users/nahomsenay/Hyperclaw-Metamo-Fork/MetaMo/core/state_accessors.metta": "d4ebf5bbeec3f9d9c50add675af61405158554ecf9dc359f0268b22f71da2ca0",
+    "/Users/nahomsenay/Hyperclaw-Metamo-Fork/MetaMo/dynamics/coherence.metta": "17478e6d846c9d18c6a2d30528a0b162c22abc4c9fbca6b49113742ad77c4043",
+    "/Users/nahomsenay/Hyperclaw-Metamo-Fork/MetaMo/dynamics/stability.metta": "0fdc8b65eb0dac5e7ecfa92505d1a22d1582eb078218f7ebdec65a5b86d551f7",
+    "/Users/nahomsenay/Hyperclaw-Metamo-Fork/MetaMo/main/main.metta": "9091a5f2a7e05e3c983ca10e6e2d84aa5d724236a986b75e0a39ec60b9dac0d9",
+    "/Users/nahomsenay/Hyperclaw-Metamo-Fork/lib/lib_import.metta": "609731cade81b0dc1aa749f3360a76d354d11d1d333c851785ab8aaf420d3f68",
+    "/Users/nahomsenay/Hyperclaw-Metamo-Fork/lib/lib_import.pl": "be76417171c88e034efc08095a907d60bf0a550bf1bbe20e36d36606f4d70a35",
+    "/Users/nahomsenay/Hyperclaw-Metamo-Fork/repos/OmegaClaw-Core/channels/irc.py": "8ca4de81be4a3968ed7960d66d367da300f41f69aacbeff9a7ed086ec5af4154",
+    "/Users/nahomsenay/Hyperclaw-Metamo-Fork/repos/OmegaClaw-Core/channels/local_channel.py": "51934e99c1200b1dce1e1b5b8464ae7bdb3b24f19b8cbfdc60d6bb2cd88a0ba6",
+    "/Users/nahomsenay/Hyperclaw-Metamo-Fork/repos/OmegaClaw-Core/channels/mattermost.py": "28971726cb8dc206b17da66a7d10f144cf4cbbf7a75aa6847bbc59e1097c3d6d",
+    "/Users/nahomsenay/Hyperclaw-Metamo-Fork/repos/OmegaClaw-Core/channels/slack.py": "bd6b4ca4296e1779c25a6da66d865cbc4f9a23104fc39195ee7bd4c886e551ab",
+    "/Users/nahomsenay/Hyperclaw-Metamo-Fork/repos/OmegaClaw-Core/channels/tg_channel.py": "00e92a7d39cbb81235514ca060a3b697ac684a878234b17518970127e4b2c132",
+    "/Users/nahomsenay/Hyperclaw-Metamo-Fork/repos/OmegaClaw-Core/channels/websearch.py": "7c687a6b75b42ae74506aa1f2140a8da8e4945d3092ef6ad9f31739867e4628c",
+    "/Users/nahomsenay/Hyperclaw-Metamo-Fork/repos/OmegaClaw-Core/lib_llm_ext.py": "eceea2e6e6a82571d9eaa497e60d0a5e89528cc8d449a07f2a1bbd47fd99fb1b",
+    "/Users/nahomsenay/Hyperclaw-Metamo-Fork/repos/OmegaClaw-Core/lib_nal.metta": "58526fb131ac9187b4fbde10d2eb267059e6f1aa0e78b2ccece0bb3da3ccda65",
+    "/Users/nahomsenay/Hyperclaw-Metamo-Fork/repos/OmegaClaw-Core/lib_pln.metta": "05b63266ad79c3cd0b32a83a4596ad47923e612e746303628da7500bbcffa7ae",
+    "/Users/nahomsenay/Hyperclaw-Metamo-Fork/repos/OmegaClaw-Core/src/agentverse.py": "989d396ba059000530ffb9639f53d80254a6fecad72959167f3c12473fc8e7e8",
+    "/Users/nahomsenay/Hyperclaw-Metamo-Fork/repos/OmegaClaw-Core/src/channels.metta": "1593d2a6281297530292a18d357f3cc90e95eedb33cca38c0cbf2dfa412437cd",
+    "/Users/nahomsenay/Hyperclaw-Metamo-Fork/repos/OmegaClaw-Core/src/context.metta": "b332b62e87ff75e7a7cb59a24d1c343aab3e39c47ddaf2a0d2db0f216c3f889b",
+    "/Users/nahomsenay/Hyperclaw-Metamo-Fork/repos/OmegaClaw-Core/src/dispatch.metta": "328cd92fed0b3489828722ef2b68a7098bce234e48cf4da3e1de17139a94aae6",
+    "/Users/nahomsenay/Hyperclaw-Metamo-Fork/repos/OmegaClaw-Core/src/dispatch.pl": "edaaab89e7fd54cb33e419f886e7767564bb488f6bcd5e693b63478cf15fc442",
+    "/Users/nahomsenay/Hyperclaw-Metamo-Fork/repos/OmegaClaw-Core/src/frame_relation.py": "d39aa9ca24af47623459bbb580890d8dbce72a045b9200269f59972c92446cd4",
+    "/Users/nahomsenay/Hyperclaw-Metamo-Fork/repos/OmegaClaw-Core/src/helper.py": "6c4fd27c62f81ab811262d9a5feb819c16516f9b0309b26dd82d6295394b462b",
+    "/Users/nahomsenay/Hyperclaw-Metamo-Fork/repos/OmegaClaw-Core/src/loop.metta": "1f776bfc751eb3da40d0592dce55af76e5b36bc010ae392dc9b6b2f335d2d330",
+    "/Users/nahomsenay/Hyperclaw-Metamo-Fork/repos/OmegaClaw-Core/src/memory.metta": "f39df385b07d41553c9e37fbd9970d58f7ce8097fc8e2b2bbeb58e33f45d6dea",
+    "/Users/nahomsenay/Hyperclaw-Metamo-Fork/repos/OmegaClaw-Core/src/skills.metta": "03daf9475b31727ce5ce0ff5ff873721ef223dc1814d9a43f12f77008bd657a3",
+    "/Users/nahomsenay/Hyperclaw-Metamo-Fork/repos/OmegaClaw-Core/src/skills.pl": "27c6e6188e5ed4ebcfa7529fb0324feb616877971e987a7f5d94b5987d7d722b",
+    "/Users/nahomsenay/Hyperclaw-Metamo-Fork/repos/OmegaClaw-Core/src/utils.metta": "558af12901759fd9c0f490c749903f665967600eb623940dade384f835daeffd",
+    "/Users/nahomsenay/Hyperclaw-Metamo-Fork/repos/petta_lib_chromadb/lib_chromadb.metta": "729e893cf6864f0137f5aefea1657f62e87352ec06a6e512c1dc3ea2d4faf86e",
+    "/Users/nahomsenay/Hyperclaw-Metamo-Fork/repos/petta_lib_chromadb/lib_chromadb.py": "395ef67a3a7bed991a634fbc19a3d3f2773ae9772d27df2e2ef6c3cd0741b401",
+    "/private/tmp/oc-cycle-vn_p02wa/cycle.metta": "d4227b4d0b8ae0dd21d1c36838dbc14d3a76c28943928a0514c9c2ab375a0443"
+  },
+  "scope": "Controlled serialized host driver; real bridge/provider/memory/native reader. Missing-file outcome is Unobserved, not typed Failure. No autonomous Core command-generation-loop or mode-transition acceptance.",
+  "verified_trace_invariants": {
+    "one_active_frame_every_record": true,
+    "one_session": true,
+    "cycles": 7
+  },
+  "trace_file": "LIVE_CYCLE_TRACE_2026-09-24.jsonl",
+  "host_configuration": {
+    "version": 1,
+    "frame_id": "current-frame",
+    "allowed_files": [
+      "/private/tmp/oc-cycle-vn_p02wa/input.txt"
+    ],
+    "global": {
+      "skills": [
+        "read-file"
+      ],
+      "permissions": [
+        "files.read",
+        "files.read:/private/tmp/oc-cycle-vn_p02wa/input.txt",
+        "frames.read"
+      ],
+      "egress": [],
+      "constraints": [
+        [
+          "DenySkill",
+          "shell"
+        ],
+        [
+          "DenySkill",
+          "write-file"
+        ],
+        [
+          "MaxCost",
+          "commands",
+          "units",
+          1
+        ]
+      ],
+      "budgets": [
+        {
+          "resource": "commands",
+          "unit": "units",
+          "available": 10,
+          "status": "Open"
+        }
+      ]
+    },
+    "frame": {
+      "skills": [
+        "read-file"
+      ],
+      "permissions": [
+        "files.read",
+        "files.read:/private/tmp/oc-cycle-vn_p02wa/input.txt",
+        "frames.read"
+      ],
+      "egress": [],
+      "constraints": [
+        [
+          "RequirePermission",
+          "frames.read"
+        ],
+        [
+          "MaxCost",
+          "commands",
+          "units",
+          1
+        ]
+      ],
+      "budgets": [
+        {
+          "resource": "commands",
+          "unit": "units",
+          "available": 2,
+          "status": "Open"
+        }
+      ]
+    },
+    "commands": [
+      {
+        "skill": "read-file",
+        "arguments": [
+          "/private/tmp/oc-cycle-vn_p02wa/input.txt"
+        ]
+      }
+    ]
+  },
+  "regressions": {
+    "metta_files_passed": 49,
+    "native_budget_assertions": 3,
+    "core_dispatch_declared_tests": 20,
+    "core_dispatch_generated_cases": 22
+  }
+}
