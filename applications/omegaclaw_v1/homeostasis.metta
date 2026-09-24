@@ -56,7 +56,8 @@
       ($existing (collapse (match &self-model-space
                                 (self-metric $name $v) (self-metric $name $v))))
       ($_ (if (!= $existing ())
-              (remove-atom &self-model-space (car-atom $existing))
+              (let $old (car-atom $existing)
+                 (remove-atom &self-model-space $old))
               _))
       ($_ (add-atom &self-model-space (self-metric $name $newValue)))
    ) ()))

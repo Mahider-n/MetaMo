@@ -32,3 +32,9 @@ def extractSemantics(provider, message):
         raise ValueError("fixture requires explicit Offline provider")
     _calls["semantics"] += 1
     return _semantic_responses.get(message, "()")
+
+
+def parseMotivosState(raw):
+    if raw not in ("", [], None):
+        raise ValueError("offline fixture expects empty memory")
+    return "()"

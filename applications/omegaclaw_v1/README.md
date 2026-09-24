@@ -50,6 +50,10 @@ see [RESURFACING.md](RESURFACING.md) for cycle bounds and multi-cycle tests.
 
 ## Installation
 
+For the verified ASICloud, local-memory and local-test-channel profile, see
+[LIVE_SETUP.md](LIVE_SETUP.md). Run `python3 tools/verify_live_setup.py` from this
+directory to reproduce setup verification with isolated artifacts and real services.
+
 Use the exact source revisions and workspace structure recorded in
 [DEPENDENCIES.md](DEPENDENCIES.md). Keep `MetaMo/`, `repos/OmegaClaw-Core/`,
 and `repos/petta_lib_chromadb/` inside the same PeTTa workspace. Use the common

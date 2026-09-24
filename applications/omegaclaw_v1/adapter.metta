@@ -302,3 +302,12 @@
        (ask-clarification (orient inspect))
        (none (execute execute))
        ($_ ()))))
+
+
+(= (replaceAntiGoal $name $newValue)
+   (let* (
+      ($_ (collapse
+             (let $old (match &goal-space (anti-goal $name $v) (anti-goal $name $v))
+                (remove-atom &goal-space $old))))
+      ($_ (add-atom &goal-space (anti-goal $name $newValue)))
+   ) ()))

@@ -206,3 +206,67 @@ def provision(path):
     if not result.get("truth", False):
         raise ConfigError("host configuration rejected; load composition and initialize dispatch first")
     return encode(record("HostDispatchConfigured", config["frame_id"], len(config["commands"])))
+
+
+_startup_config = None
+_startup_installed = False
+
+
+def configure_startup(path=None):
+    """Read trusted startup configuration once, before starting external services.
+
+    frame_id="current-frame" explicitly binds once to the first active native
+    frame. A concrete ID must match that frame. No grants follow frame switches.
+    """
+    import os
+    global _startup_config, _startup_installed
+    selected = path if path is not None else os.environ.get('OMEGACLAW_HOST_CONFIG')
+    config = read_config(selected) if selected else None
+    if config is not None:
+        build_config(config)
+    _startup_config = config
+    _startup_installed = False
+    return 1
+
+
+def provision_startup():
+    """Called by Core after ingestion/maintenance and before first selection."""
+    import copy
+    import re
+    import janus
+    global _startup_installed
+    if _startup_config is None or _startup_installed:
+        return 1
+    current = janus.query_once('''
+        with_mutex(omegaclaw_dispatch,
+          (eval(['cfv2-root-current-frame-id'], Frame),
+           (atom(Frame) -> Symbolic=1 ; Symbolic=0)))
+    ''')
+    frame = current.get('Frame')
+    if frame == []:
+        return 1  # No active frame yet; missing bindings keep admission closed.
+    if not current.get('truth') or not isinstance(frame, str) or not frame:
+        raise ConfigError('startup requires a valid active Core frame')
+    configured = _startup_config['frame_id']
+    if configured != 'current-frame' and configured != frame:
+        raise ConfigError('configured frame does not match the active Core frame')
+    if current['Symbolic'] == 1:
+        # Serialize only safe native identifiers; never interpret config as code.
+        if not re.fullmatch(r'[A-Za-z_][A-Za-z0-9_-]*', frame):
+            raise ConfigError('unsupported native frame identifier')
+        frame = Symbol(frame)
+    config = copy.deepcopy(_startup_config)
+    config['frame_id'] = frame
+    source = build_config(config)
+    # Guard the native target and installation with the same host mutex. Reuse
+    # the existing atomic installer; do not rename or rewrite the Core frame.
+    query = '''with_mutex(omegaclaw_dispatch, (
+        sread(Source, _StartupParsed),
+        _StartupParsed = ['HostDispatchConfig', _,
+                      ['PolicyScope', [target, ['FrameTarget', Expected]]|_], _],
+        eval(['cfv2-root-current-frame-id'], Actual), Actual == Expected,
+    ''' + _INSTALL + '))'
+    if not janus.query_once(query, {'Source': source}).get('truth', False):
+        raise ConfigError('startup policy installation failed or active frame changed')
+    _startup_installed = True
+    return 1

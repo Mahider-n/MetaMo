@@ -147,11 +147,18 @@
 
 
 ;; Build the standard OmegaClaw prompt with the current MetaMo decision.
-(= (getContext)
+(= (getContext) (metaMoContext))
+
+(= (metaMoContext)
    (let* (
       ($policyOutput (motivationContextBlock))
       ($bundle (activeFrameBundle))
       ($_ (println! (MOTIVATION-CONTEXT-BLOCK: $policyOutput)))
+      ($_ (println! (MetaMoDispatchTrace
+             (context (get-state &operation-context))
+             (selected (get-state &selected-operation-decision))
+             (rejections (candidateRejections))
+             (mode (lastModeObservation)))))
       ($selectedCandidate (policyOutputOperation $policyOutput))
       ($operationMapping (operationDirectiveForCandidate $selectedCandidate))
       (($policyMode $directive)

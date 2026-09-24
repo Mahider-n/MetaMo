@@ -6,6 +6,8 @@ import sys
 root = Path(sys.argv[1]).resolve()
 loop = (root / 'repos/OmegaClaw-Core/src/loop.metta').read_text()
 startup = (root / 'MetaMo/applications/omegaclaw_v1/run.metta').read_text()
+assert loop.index('(ctx-maintain-frame)') < loop.index('($_ (coreLoopPrepare))') < loop.index('($prompt (if')
+assert startup.index('!(initMetaMoDispatch)') < startup.index('!(initializeHostStartup)') < startup.index('!(motivatedOmegaclaw)')
 assert '(eval $s)' not in loop
 assert '(coreLoopDispatchCommand $dispatchTicket $s)' in loop
 assert '(coreLoopDispatchCommand $dispatchTicket (quote (switch-mode)))' in loop

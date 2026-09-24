@@ -9,8 +9,7 @@ retains its legacy behavior.
 
 **Startup is closed by default.** There are no implicit command grants or typed
 policy defaults. A trusted host must provision policies and exact command bindings
-before useful execution. The previously documented live invocation alone does
-not provide this configuration. Neither model output nor compacted constraint
+before useful execution. Use the explicit startup configuration option below to provide these grants. Neither model output nor compacted constraint
 summaries may provision it. This is a single-frame, serialized, session-only
 implementation, not the durable v1 dispatch ledger in `CONTRACTS.md`.
 
@@ -18,7 +17,7 @@ implementation, not the durable v1 dispatch ledger in `CONTRACTS.md`.
 
 `host_dispatch_config.py` provisions a bounded set of real Core read commands.
 Copy `host_dispatch.example.json` into host-owned configuration, replace its
-frame ID and absolute file paths, and explicitly set both policy scopes. The
+absolute file paths, and explicitly set both policy scopes. The
 example is a template; importing the module installs nothing.
 
 | Exact command | Candidate | Required permissions | Egress | Prospective cost |
@@ -53,11 +52,10 @@ Provisioning validates the complete configuration and typed records, then
 atomically replaces policies and exact bindings under the existing dispatch
 mutex. Successful replacement invalidates outstanding tickets. Invalid
 configuration preserves the previous policies and bindings. This is an explicit
-host API, not a model skill or automatic configuration in `run.metta`.
+host API, not a model skill. The startup adapter below invokes the same installer.
 
-The frame ID must match the typed snapshot target. The integration fixture uses
-an explicit string ID; mapping native Core symbol IDs to this contract remains
-pending. The host must keep allowlisted paths under its control throughout the
+The manual `provision` API retains explicit string frame targets. Startup resolves
+the configured target to the actual Core ID, preserving its symbol/string type. The host must keep allowlisted paths under its control throughout the
 session: provisioning-time path validation is not a filesystem sandbox.
 Costs currently account for command units only, not file bytes, memory, or time;
 budgets are checked prospectively without reservation or consumption settlement.
@@ -84,6 +82,40 @@ The current live intent adapter binds the selected candidate to a same-frame
 unsupported on this live path and produce no action. The Core dispatcher can
 wrap mutation handlers supplied by another trusted adapter, but there is no
 automatic transition authorization or fallback through a `defer` candidate.
+
+## Startup configuration
+
+```bash
+python3 MetaMo/scripts/run-omegaclaw.py MetaMo/applications/omegaclaw_v1/run.metta --host-config /absolute/path/host.json
+```
+
+`OMEGACLAW_HOST_CONFIG` is the equivalent trusted host environment setting; the
+launcher option takes precedence. Startup reads and validates the configuration
+before starting the loop/services. Missing configuration leaves dispatch closed;
+an explicitly supplied unreadable or malformed configuration stops startup.
+No secrets belong in this policy file.
+
+Use `"frame_id": "current-frame"` to bind once to the first active frame, or a
+concrete ID to require an exact match. Core's initial context has no active frame:
+`coreLoopPrepare` runs after message ingestion/frame maintenance, before
+`getContext` performs motivational selection. Until a frame exists no bindings
+are installed. Native frame IDs are preserved, never renamed. Installation
+rechecks the target under the dispatch mutex and atomically replaces the policies
+and exact bindings using the existing host installer.
+
+Repeated cycles do not reload the file or restore revoked grants. Later frames
+do not inherit the first frame's permissions; mismatched targets remain denied.
+Changing configuration requires explicit trusted reprovisioning or a new process.
+Only `read-file` and `show-current-frame` are supported. Candidate generation and
+policy still determine whether either operation can be selected on a given cycle.
+The default Core preparation hook does nothing when the v1 startup adapter is
+absent. Preserve the updated Core `src/dispatch.metta` and `src/loop.metta` with
+`host_startup.metta`, `run.metta`, the host configuration module and launcher.
+
+`tests/host_startup_test.metta` checks delayed provisioning, native identity,
+bridge admission, real read/frame handlers, once-only installation, target mismatch,
+permission denial and isolation across frame changes. These are local integration
+checks with external services doubled, not a live provider/channel run.
 
 ## Final check and outcomes
 
@@ -303,3 +335,27 @@ multi-frame transition dispatch, and restart
 reconciliation remain separate integration work. Host ingestion, bookkeeping and
 frame audit updates are host lifecycle operations, not model-selected commands;
 this boundary does not turn them into MetaMo-owned mutations.
+
+### Startup wiring verification — 24 September 2026
+
+Commands from the workspace root:
+
+```bash
+python3 MetaMo/scripts/run-tests.py --root MetaMo/applications/omegaclaw_v1 --petta-runner ./run.sh --jobs 2 --timeout 60
+python3 MetaMo/scripts/run-omegaclaw.py MetaMo/applications/omegaclaw_v1/tests/host_startup_test.metta
+python3 MetaMo/applications/omegaclaw_v1/tests/host_dispatch_config_test.py
+python3 MetaMo/scripts/import-resolution-test.py
+swipl -q -s repos/OmegaClaw-Core/Autotests/dispatch/dispatch_test.pl
+bash MetaMo/applications/omegaclaw_v1/tests/dispatch_boundary_test.sh
+python3 MetaMo/scripts/run-omegaclaw.py MetaMo/applications/omegaclaw_v1/run.metta --audit --report /tmp/omegaclaw-startup-imports.json
+```
+
+Results: all 48 MeTTa files pass; the final standalone startup scenario passes
+20 assertions, including registration through `initializeHostStartup`. All 12
+configuration Python tests, eight import regressions, 20 named Core dispatch
+tests (22 generated cases), the dispatch boundary guard and startup audit pass.
+Logs: `/tmp/omegaclaw-startup-regressions.log` and
+`/tmp/omegaclaw-host-startup-test.log`. An initial new-test failure reflected a
+fixture without an open task; it was corrected to load the admitted native frame
+and establish the task before checking candidate admission. No live services or
+external channel messages were used.

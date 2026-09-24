@@ -1,5 +1,11 @@
 # OmegaClaw v1 dependency baseline and workspace layout
 
+**Current bounded live profile:** [LIVE_SETUP.md](LIVE_SETUP.md) records the
+24 September 2026 real-provider, memory, local-channel and read-handler setup
+verification. Its Janus-observed package versions and source fingerprints
+supersede the live-readiness uncertainty below for that specific profile.
+The older offline reconstruction remains historical; neither is a clean-install lock.
+
 Refreshed 21 September 2026. The revisions plus source overlays below were
 reconstructed in a separate temporary workspace and verified offline. Commits
 alone do not reproduce this baseline yet. This is not a live-runtime,
@@ -223,3 +229,42 @@ above lacks these APIs. Preserve this overlay together with the MetaMo
 projection/accessor changes. Historical reconstruction hashes above do not include
 this slice. See [CONTINUATION.md](CONTINUATION.md) for setup and verification.
 The current local 43-file suite passes; live deployment remains unverified.
+
+## Provider helper overlay — 24 September 2026
+
+Core's `lib_llm_ext.py` now supplies the v1 helper API. Both model-backed helpers
+use `callProvider` with the caller's configured provider; `ASICloud` uses the
+existing `ASI_API_KEY` configuration and registered MiniMax model. No alternate
+provider or additional key is required by these helpers.
+
+- `executionConfirmationScore(provider, message, active_task)` returns a bounded
+  advisory intent score, not execution permission or completion evidence.
+- `extractSemantics(provider, message)` validates JSON and emits only canonical
+  `signal` records for `user-angry`, `danger`, and `execution-request`. It cannot
+  inject arbitrary MeTTa or manufacture host execution observations.
+- Malformed model responses produce zero/no semantic evidence. Exceptions from
+  the provider dispatcher propagate; helpers do not retry or switch providers.
+- `parseMotivosState(raw)` uses no model. It accepts the legacy saved payload,
+  quoted memory representation, or actual `[time, document]` query rows and
+  returns validated MeTTa text. It rejects malformed, out-of-range, duplicate or
+  ambiguous snapshots before restoration. Multiple matching memories remain
+  unresolved; this is not latest-version retrieval or durable recovery.
+
+The v1 persistence consumer explicitly parses that text and restores anti-goals
+as well as goals, modulators and self metrics. Self-metric replacement evaluates
+its old entry before removal, preventing duplicate values on restoration.
+Preserve these application overlays with the Core helper implementation.
+
+Local checks (no provider requests or credentials):
+
+```bash
+python3 repos/OmegaClaw-Core/Autotests/test_provider_helpers.py
+python3 MetaMo/scripts/run-omegaclaw.py MetaMo/applications/omegaclaw_v1/tests/provider_helpers_test.metta
+```
+
+Eight Python tests and eight MeTTa assertions pass, including ASICloud routing
+with mocked transport, invalid output, and real save/restore through the Python
+boundary using the memory adapter's query shape. The boundary fixture supplies
+string concatenation and in-memory storage; it does not establish live memory or
+channel readiness. Subsequent real MiniMax connectivity and bounded setup
+verification are recorded in [LIVE_SETUP.md](LIVE_SETUP.md).

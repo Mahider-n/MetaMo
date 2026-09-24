@@ -36,31 +36,21 @@
    (let* (
       ($_ (println! ("Querying long-term memory for prior motivational state...")))
       ($results (eval (query (persistenceKey))))
-      ($raw     (eval (string-safe $results)))
+      ($parsed (sread (py-call (lib_llm_ext.parseMotivosState $results))))
    )
-   (if (hasTextContent $raw)
-       (let* (
-          ($parsed  (py-call (lib_llm_ext.parseMotivosState $raw)))
-          ($_ (if (and (!= $parsed ()) (!= $parsed (Error)))
-                  (let* (
-                     ($_ (collapse
-                            (let $entry (superpose $parsed)
-                               (case $entry (
-                                  ((goal $name $val)
-                                    (replaceGoal $name $val))
-                                  ((modulator $name $val)
-                                    (replaceModulator $name $val))
-                                  ((motive $name $val)
-                                    (replaceMotive $name $val))
-                                  ((self-metric $name $val)
-                                    (replaceSelfMetric $name $val))
-                                  ($_ (empty)))))))
-                     ($_ (println! ("Prior motivational state successfully restored.")))
-                  ) ())
-                  (println! ("No prior motivational state found. Using registry defaults."))
-                  ))
-       ) ())
-       (println! ("No prior motivational state found. Using registry defaults.")))))
+      (if (and (!= $parsed ()) (!= $parsed (Error)))
+          (let* (
+             ($_ (collapse
+                    (let $entry (superpose $parsed)
+                       (case $entry (
+                          ((goal $name $val) (replaceGoal $name $val))
+                          ((anti-goal $name $val) (replaceAntiGoal $name $val))
+                          ((modulator $name $val) (replaceModulator $name $val))
+                          ((self-metric $name $val) (replaceSelfMetric $name $val))
+                          ($_ (empty)))))))
+             ($_ (println! ("Prior motivational state successfully restored.")))
+          ) ())
+          (println! ("No prior motivational state found. Using registry defaults.")))))
 
 
 ;; tryRestoreOrInit - Called once during startup after default initialisation.

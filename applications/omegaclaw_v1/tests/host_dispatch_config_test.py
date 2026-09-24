@@ -5,6 +5,7 @@ import json
 from pathlib import Path
 import tempfile
 import unittest
+from unittest.mock import patch
 
 APP = Path(__file__).resolve().parents[1]
 spec = importlib.util.spec_from_file_location("host_dispatch_config", APP / "host_dispatch_config.py")
@@ -24,6 +25,27 @@ class HostDispatchConfigTests(unittest.TestCase):
         self.value["commands"][0]["arguments"] = [str(self.file)]
         for name in ("global", "frame"):
             self.value[name]["permissions"] = ["files.read", "files.read:" + str(self.file), "frames.read"]
+
+    def test_startup_loads_once_and_validates_before_replacement(self):
+        path = self.root / "startup.json"
+        path.write_text(json.dumps(dict(self.value, frame_id="current-frame")))
+        self.assertEqual(config.configure_startup(str(path)), 1)
+        retained = config._startup_config
+        path.write_text('{"invalid":true}')
+        self.assertEqual(config._startup_config, retained)
+        with self.assertRaises(config.ConfigError):
+            config.configure_startup(str(path))
+        self.assertIs(config._startup_config, retained)
+
+    def test_startup_environment_is_explicit_and_optional(self):
+        path = self.root / "startup.json"
+        path.write_text(json.dumps(self.value))
+        with patch.dict('os.environ', {'OMEGACLAW_HOST_CONFIG': str(path)}):
+            self.assertEqual(config.configure_startup(), 1)
+            self.assertEqual(config._startup_config['frame_id'], self.value['frame_id'])
+        with patch.dict('os.environ', {}, clear=True):
+            self.assertEqual(config.configure_startup(), 1)
+            self.assertIsNone(config._startup_config)
 
     def test_derive_exact_file_permissions_and_command_cost(self):
         row = config.binding(self.value["commands"][0], "frame-1", [str(self.file)])

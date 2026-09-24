@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "frame_id": "replace-with-host-frame-id",
+  "frame_id": "current-frame",
   "allowed_files": ["/absolute/path/to/input.txt"],
   "global": {
     "skills": ["read-file", "show-current-frame"],
