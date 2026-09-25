@@ -1,5 +1,11 @@
 # OmegaClaw v1 dependency baseline and workspace layout
 
+The [live mode-transition verification](LIVE_MODES.md) additionally requires
+Core's updated `src/skills.metta`: pre-open file unavailability returns
+`(Error read-file FileUnavailable)`, allowing real observed failure signals.
+Post-check exceptions retain uncertain dispatch semantics. This supersedes the
+older missing-file behavior recorded in the historical live-cycle report.
+
 **Current bounded live profile:** [LIVE_SETUP.md](LIVE_SETUP.md) records the
 24 September 2026 real-provider, memory, local-channel and read-handler setup
 verification. Its Janus-observed package versions and source fingerprints

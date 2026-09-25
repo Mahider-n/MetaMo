@@ -210,6 +210,12 @@ Outcome context comes from the retained decision, never the current frame.
 Mismatched commands/tickets remain blocked and do not overwrite the selected
 action's observation. Repeated delivery retains the same correlation identity.
 
+The native reader now returns `(Error read-file FileUnavailable)` when its
+pre-open file check fails. This is a definite `Failure`; empty file contents
+remain `Success`, and later read exceptions remain `Unobserved`. Preserve Core's
+updated `src/skills.metta`; [LIVE_MODES.md](LIVE_MODES.md) records the live
+failure/recovery and mode-transition evidence.
+
 Before each new snapshot, `prepareTaskStateForMetaMo` consumes the preceding
 cycle's observation only when session, cycle, and current frame match. It retains
 an applied-decision marker and projects `(OperationFeedback STATUS FAILURE-STREAK)`

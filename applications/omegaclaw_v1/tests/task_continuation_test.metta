@@ -157,12 +157,12 @@
 !(prepareTaskStateForMetaMo)
 !(test (frameRuntimeContinuation (activeFrameBundle)) (ContinuationView "read-plan" None Held ()))
 
-;; An uncertain read must not advance or automatically retry the plan.
+;; A definite native read failure must hold the plan without automatic retry.
 !(test (continuationTestReset) (ContinuationStarted "read-plan"))
 !(test (policyOutputOperation (motivationContextBlock)) execute-skill)
 !(test (py-call (host_config_fixture.remove_file)) 1)
 !(test (coreLoopDispatchCommand (coreLoopDispatchBegin) (selectedHostCommand))
-   (DispatchResult Unobserved ExecutionUncertain none))
+   (DispatchResult Executed Feasible (Error read-file FileUnavailable)))
 !(motivationContextBlock)
 !(test (frameRuntimeContinuation (activeFrameBundle)) (ContinuationView "read-plan" None Held ()))
 !(test (executionContinuationNeededForBundle (activeFrameBundle)) False)

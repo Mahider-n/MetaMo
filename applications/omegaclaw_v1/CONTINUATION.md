@@ -125,7 +125,9 @@ policy denial/revocation, uncertain execution, explicit failure, malformed plans
 frame changes, reset, status routing and explicit host completion are checked.
 Only external providers/memory are doubled; no scorer, candidate rule, read handler
 or continuation function is replaced. The failure transition is tested directly
-with a host-consumed failure fixture; missing-file uncertainty uses real dispatch.
+with a host-consumed failure fixture; pre-open missing-file failure uses real
+dispatch. The updated native reader reports `FileUnavailable` as definite
+`Failure`; uncertain exceptions remain separate. Both statuses hold the plan.
 
 All 43 focused MeTTa files, eight import regressions, five Core helper tests,
 six offline-service tests, ten provisioning tests and four boundary guards passed.

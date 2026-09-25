@@ -42,14 +42,19 @@
 !(test (frameRuntimeOperationFeedback (activeFrameBundle)) (OperationFeedback Success 0))
 !(test (policyOutputOperation (get-state &last-meta-mo-policy-output)) execute-skill)
 ;; Remove only the generated test file after selection, exercising the real
-;; read handler's missing-file path. Core conservatively reports Unobserved.
+;; read handler's missing-file path. Core now reports a definite failure.
 !(test (py-call (live_cycle_probe.change_file 0)) 1)
-!(test (liveDispatch "io-failure") (DispatchResult Unobserved ExecutionUncertain none))
+!(test (liveDispatch "io-failure") (DispatchResult Executed Feasible (Error read-file FileUnavailable)))
 
+;; Consume the definite failure before the next fresh execution confirmation.
+!(change-state! &core-loop-new-message False)
+!(test (liveCycle "consume-failure") 1)
+!(test (frameRuntimeOperationFeedback (activeFrameBundle)) (OperationFeedback Failure 1))
+!(change-state! &core-loop-new-message True)
 ;; Explicit operator repair of a read-only dependency; no fabricated callback.
 !(test (py-call (live_cycle_probe.change_file 1)) 1)
 !(test (liveCycle "recovery") 1)
-!(test (frameRuntimeOperationFeedback (activeFrameBundle)) (OperationFeedback Unobserved 0))
+!(test (frameRuntimeOperationFeedback (activeFrameBundle)) (OperationFeedback NoOutcome 1))
 !(test (policyOutputOperation (get-state &last-meta-mo-policy-output)) execute-skill)
 !(test (liveDispatch "recovery") (DispatchResult Executed Feasible "live cycle approved content"))
 

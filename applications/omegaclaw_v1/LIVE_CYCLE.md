@@ -1,5 +1,10 @@
 # Bounded live bridge and execution demonstration
 
+**Subsequent update:** [LIVE_MODES.md](LIVE_MODES.md) verifies all six live mode
+transitions and introduces definite pre-open reader failure reporting. The run
+recorded below used the older handler and remains historical. The current default
+live-cycle script includes an additional failure-consumption cycle (eight cycles).
+
 Verified 24 September 2026 at 19:02 UTC: **35 assertions passed across seven
 consecutive cycles**, in one interpreter process, with one session and one active
 native Core frame. The run completed in 48.96 seconds without timeout or retry.

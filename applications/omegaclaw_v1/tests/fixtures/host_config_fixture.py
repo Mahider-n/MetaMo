@@ -96,6 +96,11 @@ def remove_file():
     return 1
 
 
+def empty_file():
+    Path(_config["allowed_files"][0]).write_text("")
+    return 1
+
+
 def rejects_invalid():
     import host_dispatch_config
     try:

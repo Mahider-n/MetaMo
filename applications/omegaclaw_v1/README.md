@@ -1,5 +1,9 @@
 # MetaMo OmegaClaw Application
 
+The bounded [live mode scenario](LIVE_MODES.md) now verifies all six constitutional
+transitions with real provider signals, native read failure/recovery, host
+completion, and Threat/Sleep dispatch checks.
+
 This directory contains the MetaMo adapter and motivation logic for OmegaClaw.
 
 ## Boundary contracts

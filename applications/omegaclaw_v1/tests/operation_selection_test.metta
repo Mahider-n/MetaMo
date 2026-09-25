@@ -219,7 +219,7 @@
    (DispatchResult Executed Feasible "observed local file content"))
 !(test (get-state &last-operation-outcome) (get-state &file-outcome))
 
-;; A failure after invocation began is uncertain, not an invented success.
+;; A file absent before opening is a definite native reader failure.
 ;; A new message must not discard the preceding same-frame observation.
 !(change-state! &new-msg-flag True)
 !(bind! &uncertain-bundle (new-state (prepareTaskStateForMetaMo)))
@@ -228,11 +228,11 @@
 !(retainSelectedOperation execute-skill (captureCandidateOperations (get-state &uncertain-bundle)))
 !(test (py-call (host_config_fixture.remove_file)) 1)
 !(test (coreLoopDispatchCommand (coreLoopDispatchBegin) (selectedHostCommand))
-   (DispatchResult Unobserved ExecutionUncertain none))
+   (DispatchResult Executed Feasible (Error read-file FileUnavailable)))
 !(test (get-state &last-operation-outcome)
    (OperationOutcome (get-state &selected-operation-decision)
-      (attempted-command (selectedHostCommand)) Unobserved
-      (DispatchResult Unobserved ExecutionUncertain none)))
+      (attempted-command (selectedHostCommand)) Failure
+      (DispatchResult Executed Feasible (Error read-file FileUnavailable))))
 !(test (py-call (host_config_fixture.replace_file_content)) 1)
 !(change-state! &new-msg-flag False)
 
@@ -241,10 +241,10 @@
 (= (outcome-test-failure) (quote (Error test-handler failed)))
 !(test (py-call (host_config_fixture.install_failure_handler)) 1)
 !(bind! &failure-bundle (new-state (prepareTaskStateForMetaMo)))
-!(test (frameRuntimeOperationFeedback (get-state &failure-bundle)) (OperationFeedback Unobserved 0))
+!(test (frameRuntimeOperationFeedback (get-state &failure-bundle)) (OperationFeedback Failure 1))
 !(refreshSignals (get-state &failure-bundle))
 !(test (hasSignal progress-made) False)
-!(test (hasErrors) False)
+!(test (hasErrors) True)
 !(retainSelectedOperation execute-skill (captureCandidateOperations (get-state &failure-bundle)))
 ;; Compare as data so expected Error records are not interpreter diagnostics.
 !(test (== (coreLoopDispatchCommand (coreLoopDispatchBegin) (selectedHostCommand))
@@ -259,13 +259,13 @@
 ;; Multiple exact argument bindings cannot collapse into one candidate score.
 !(py-call (host_dispatch_config.provision (py-call (host_config_fixture.write "ambiguous"))))
 !(bind! &bundle (new-state (prepareTaskStateForMetaMo)))
-!(test (frameRuntimeOperationFeedback (get-state &bundle)) (OperationFeedback Failure 1))
+!(test (frameRuntimeOperationFeedback (get-state &bundle)) (OperationFeedback Failure 2))
 !(refreshSignals (get-state &bundle))
-!(test (hasSignal failure) True)
+!(test (hasSignal repeated-failure) True)
 !(test (hasSignal progress-made) False)
 ;; Rereading the same snapshot must not increment its failure streak.
 !(refreshSignals (get-state &bundle))
-!(test (get-state &failure-streak) 1)
+!(test (get-state &failure-streak) 2)
 !(test (frameRuntimeTaskOpen (get-state &bundle)) True)
 !(bind! &rows (new-state (captureCandidateOperations (get-state &bundle))))
 !(test (hostOperationGate (get-state &bundle) execute-skill (get-state &rows))
@@ -276,12 +276,12 @@
 !(py-call (host_dispatch_config.provision (py-call (host_config_fixture.write "allowed"))))
 !(test (py-call (host_config_fixture.install_failure_handler)) 1)
 !(bind! &repeat-failure-bundle (new-state (prepareTaskStateForMetaMo)))
-!(test (frameRuntimeOperationFeedback (get-state &repeat-failure-bundle)) (OperationFeedback NoOutcome 1))
+!(test (frameRuntimeOperationFeedback (get-state &repeat-failure-bundle)) (OperationFeedback NoOutcome 2))
 !(retainSelectedOperation execute-skill (captureCandidateOperations (get-state &repeat-failure-bundle)))
 !(test (== (coreLoopDispatchCommand (coreLoopDispatchBegin) (selectedHostCommand))
    (DispatchResult Executed Feasible (Error test-handler failed))) True)
 !(bind! &second-failure (new-state (prepareTaskStateForMetaMo)))
-!(test (frameRuntimeOperationFeedback (get-state &second-failure)) (OperationFeedback Failure 2))
+!(test (frameRuntimeOperationFeedback (get-state &second-failure)) (OperationFeedback Failure 3))
 !(refreshSignals (get-state &second-failure))
 !(test (hasSignal repeated-failure) True)
 !(test (frameRuntimeTaskOpen (get-state &second-failure)) True)
@@ -289,7 +289,7 @@
 !(change-state! &lastresults "Task completed successfully")
 !(change-state! &error "old formatted error")
 !(bind! &duplicate-bundle (new-state (prepareTaskStateForMetaMo)))
-!(test (frameRuntimeOperationFeedback (get-state &duplicate-bundle)) (OperationFeedback NoOutcome 2))
+!(test (frameRuntimeOperationFeedback (get-state &duplicate-bundle)) (OperationFeedback NoOutcome 3))
 !(refreshSignals (get-state &duplicate-bundle))
 !(test (hasResults) False)
 !(test (hasErrors) False)
@@ -303,9 +303,9 @@
    (DispatchResult Executed Feasible (Error test-handler failed))) True)
 !(bind! &old-session-outcome (new-state (get-state &last-operation-outcome)))
 !(change-state! &cfv2-current-frame-id "other-frame")
-!(test (frameRuntimeOperationFeedback (prepareTaskStateForMetaMo)) (OperationFeedback NoOutcome 2))
+!(test (frameRuntimeOperationFeedback (prepareTaskStateForMetaMo)) (OperationFeedback NoOutcome 3))
 !(change-state! &cfv2-current-frame-id "configured-frame")
-!(test (frameRuntimeOperationFeedback (prepareTaskStateForMetaMo)) (OperationFeedback NoOutcome 2))
+!(test (frameRuntimeOperationFeedback (prepareTaskStateForMetaMo)) (OperationFeedback NoOutcome 3))
 !(test (== (get-state &last-operation-outcome) (get-state &old-session-outcome)) True)
 
 ;; Only explicit host adjudication closes the commitment in the next snapshot.

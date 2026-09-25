@@ -210,8 +210,9 @@ both modes from the bridge's retained before/after record:
 | `completed-task` | Engaged → Sleep | Host completion and next-frame selection leave no current frame or trigger evidence. |
 
 The additional anger-input, timing, policy-denial, frame/session expiry and
-repeated idle-cycle checks remain in the same regression. Live validation remains
-Task 6 in the integration plan.
+repeated idle-cycle checks remain in the same regression. Bounded live validation
+now passes all six transitions with real providers and native read outcomes;
+see [LIVE_MODES.md](LIVE_MODES.md) for the Task 6 evidence and driver scope.
 
 
 ## Retained rule and timing evidence
