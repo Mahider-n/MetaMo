@@ -88,9 +88,9 @@ all three assertions with the fix, without provider or memory services.
 
 ## Retained evidence and validation
 
-- [Result report](tests/LIVE_CYCLE_RESULTS_2026-09-24.json): exact invocation,
+- [Result report](../tests/LIVE_CYCLE_RESULTS_2026-09-24.json): exact invocation,
   source fingerprints, host configuration, assertion counts, timing and scope.
-- [Complete cycle traces](tests/LIVE_CYCLE_TRACE_2026-09-24.jsonl): 13 selection/
+- [Complete cycle traces](../tests/LIVE_CYCLE_TRACE_2026-09-24.jsonl): 13 selection/
   outcome records, including snapshots, signals/mode evidence, decisions/scores,
   selected commands/tickets, rejection reasons and correlated outcomes.
 - Original artifacts: `/private/tmp/oc-cycle-vn_p02wa/`, including `cycle.log`,

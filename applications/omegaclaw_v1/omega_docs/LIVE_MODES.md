@@ -91,8 +91,8 @@ not migrate persisted state or add automatic retries to held continuation plans.
 
 ## Evidence and regressions
 
-- [Result and transition events](tests/LIVE_MODE_RESULTS_2026-09-24.json)
-- [All 15 snapshot/selection/outcome traces](tests/LIVE_MODE_TRACE_2026-09-24.jsonl)
+- [Result and transition events](../tests/LIVE_MODE_RESULTS_2026-09-24.json)
+- [All 15 snapshot/selection/outcome traces](../tests/LIVE_MODE_TRACE_2026-09-24.jsonl)
 - Original artifacts: `/private/tmp/oc-cycle-wpun4h8p/`, including generated
   configuration/entry, provider output, import report and source SHA-256 manifest.
 

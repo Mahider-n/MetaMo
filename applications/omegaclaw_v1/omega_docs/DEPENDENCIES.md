@@ -204,7 +204,7 @@ Subsequent offline-service work adds `tests/offline_ingestion_test.metta`,
 plus the context-before-signals import order in `composition.metta`. These are
 not included in the pinned 33-file reconstruction above. The current working
 tree passes 34 MeTTa files and six service-double tests; see
-[OFFLINE_SERVICES.md](tests/OFFLINE_SERVICES.md) for their scope and commands.
+[OFFLINE_SERVICES.md](OFFLINE_SERVICES.md) for their scope and commands.
 
 After configuring live dependencies, channel credentials, and trusted host
 policies/exact command bindings per [DISPATCH.md](DISPATCH.md):

@@ -23,7 +23,7 @@ The default runs all four scenarios below, each in an isolated process through
 of the caller's working directory. `--timeout` bounds each scenario (300 seconds
 by default). A timeout terminates the launcher and its child interpreter.
 
-Use the dependency layout and source overlays in [DEPENDENCIES.md](../DEPENDENCIES.md),
+Use the dependency layout and source overlays in [DEPENDENCIES.md](DEPENDENCIES.md),
 including the common Python launcher and existing `scripts/petta-imports.pl`
 resolver. Those local launcher overlays are currently untracked dependencies;
 copy/include them when reproducing this checkout. No live provider keys, channels
@@ -69,7 +69,7 @@ It writes a failure report and exits nonzero on interruption. It never retries a
 failed scenario automatically. The ticket UUID `float_overflow` described in
 historical results below is fixed by the updated Core `src/dispatch.pl` overlay:
 ticket IDs are strings before serialization and ledger insertion. See
-[DISPATCH.md](../DISPATCH.md#verification-and-limits). Older Core overlays still
+[DISPATCH.md](DISPATCH.md#verification-and-limits). Older Core overlays still
 have the failure; the harness itself does not retry or suppress it.
 
 This implements Task 5's shared harness and scenario-coverage items. The original
@@ -367,7 +367,7 @@ so the suite used a temporary shell wrapper delegating to the absolute path of
 
 The missing Core lifecycle helpers are now implemented. The bounded two-read
 continuation regression passes 70 assertions and the current focused suite passes
-43 files. See [CONTINUATION.md](../CONTINUATION.md) for the exact host plan,
+43 files. See [CONTINUATION.md](CONTINUATION.md) for the exact host plan,
 helper contracts, test commands and scope. It uses real ingestion and authorized
 Core reads without a new message between steps. The earlier missing-helper probe
 above is historical; arbitrary prose still cannot establish remaining execution,
@@ -393,7 +393,7 @@ Traces include session/cycle, frame, signals, mode before/after, timing counters
 and policy output. The test covers all six required mode transitions, persistent
 recovery without repeated failure counts, frame/session expiry, terminal
 commitment clearing, denied work in Threat, no task execution in Sleep, and
-non-default confirmation/hold/cooldown behavior. See `../MODE_TRANSITIONS.md` for
+non-default confirmation/hold/cooldown behavior. See `MODE_TRANSITIONS.md` for
 host ownership and the exact lifecycle path exercised. This is offline evidence,
 not a live provider/scheduler or durable-recovery demonstration. The existing
 Core ticket-parser `float_overflow` limitation still applies.
@@ -431,7 +431,7 @@ or CI sources were changed for this follow-up.
 `lastModeObservation` now appends the winning registry rule, requested target,
 all rule matches (including rejected thresholds and losing groups), and the
 actual current/target timing configuration and checks. See
-[MODE_TRANSITIONS.md](../MODE_TRANSITIONS.md) for the complete diagnostic shape.
+[MODE_TRANSITIONS.md](MODE_TRANSITIONS.md) for the complete diagnostic shape.
 The full-loop test additionally covers inclusive entry/exit thresholds,
 hysteresis, retained confirmation/hold/cooldown checks, and trace stability after
 registry changes. Provider values still flow through real signal extraction;

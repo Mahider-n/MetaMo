@@ -4,7 +4,9 @@ The bounded [live mode scenario](LIVE_MODES.md) now verifies all six constitutio
 transitions with real provider signals, native read failure/recovery, host
 completion, and Threat/Sleep dispatch checks.
 
-This directory contains the MetaMo adapter and motivation logic for OmegaClaw.
+The parent application directory contains the MetaMo adapter and motivation logic
+for OmegaClaw. This `omega_docs/` directory contains its documentation. Source paths
+below are relative to `MetaMo/applications/omegaclaw_v1` unless stated otherwise.
 
 ## Boundary contracts
 
@@ -55,8 +57,7 @@ see [RESURFACING.md](RESURFACING.md) for cycle bounds and multi-cycle tests.
 ## Installation
 
 For the verified ASICloud, local-memory and local-test-channel profile, see
-[LIVE_SETUP.md](LIVE_SETUP.md). Run `python3 tools/verify_live_setup.py` from this
-directory to reproduce setup verification with isolated artifacts and real services.
+[LIVE_SETUP.md](LIVE_SETUP.md). Run `python3 tools/verify_live_setup.py` from the application directory (`MetaMo/applications/omegaclaw_v1`) to reproduce setup verification with isolated artifacts and real services.
 
 [LIVE_CYCLE.md](LIVE_CYCLE.md) records the subsequent seven-cycle real-bridge
 success, controlled read-failure/recovery and policy-denial demonstration, with
@@ -78,7 +79,7 @@ for the session dispatch boundary described in [DISPATCH.md](DISPATCH.md).
 Without them, commands return explicit no-action results. Stale or revoked
 decisions cannot fall back to direct evaluation. The invocation below does not
 provision policy; configure it in trusted host startup code first.
-The [host configuration template](host_dispatch.example.json) and
+The [host configuration template](../host_dispatch.example.json) and
 [provisioning instructions](DISPATCH.md#trusted-host-configuration) cover exact
 `read-file` and `show-current-frame` commands with explicit global/frame policies.
 
@@ -95,10 +96,10 @@ The full motivational bridge has a separate offline regression:
 `motivationContextBlock`, including state updates and persistence scheduling,
 with external provider/memory doubles. It covers fresh messages and idle no-action;
 execution continuation and the complete feedback loop remain pending. See
-[offline service tests](tests/OFFLINE_SERVICES.md) for commands and limitations.
+[offline service tests](OFFLINE_SERVICES.md) for commands and limitations.
 
 For real message ingestion without ChromaDB or LLM services, see
-[offline service tests](tests/OFFLINE_SERVICES.md). These use test-only provider
+[offline service tests](OFFLINE_SERVICES.md). These use test-only provider
 doubles while retaining Core frame creation and MetaMo projection, signal
 extraction, appraisal, scoring, and policy. They are separate from the fixed-score
 demo below and do not establish a complete execution-feedback loop.

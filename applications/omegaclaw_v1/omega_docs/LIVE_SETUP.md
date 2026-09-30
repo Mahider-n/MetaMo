@@ -59,7 +59,7 @@ also exercises Core's ASICloud relation-classifier route with its usual settings
 | Storage isolation | `CHROMA_DB_PATH`, `OMEGACLAW_HISTORY_PATH`, `OMEGACLAW_LOCAL_INPUT` point into the artifact directory |
 | Thread configuration | `TOKENIZERS_PARALLELISM=false`, `OMP_NUM_THREADS=1` |
 
-[requirements-live-verified.txt](requirements-live-verified.txt) records the
+[requirements-live-verified.txt](../requirements-live-verified.txt) records the
 direct package versions observed inside Janus. These differ from Core's declared
 requirements and are the combination exercised here. This is a verified existing
 installation, not a clean-install lock or a guarantee for other platforms.
@@ -90,7 +90,7 @@ these handler tests call the trusted Core ticket/gate API directly.
 The final invocation at **2026-09-24 18:45 UTC** passed **22/22 setup assertions**
 and **1/1 fresh-process reopen assertion**, with exit code zero and no timeout.
 Artifacts: `/private/tmp/oc-setup-mpcdt5c9/`. A retained, secret-free record is in
-[tests/LIVE_SETUP_RESULTS_2026-09-24.json](tests/LIVE_SETUP_RESULTS_2026-09-24.json).
+[tests/LIVE_SETUP_RESULTS_2026-09-24.json](../tests/LIVE_SETUP_RESULTS_2026-09-24.json).
 
 - Three explicit real ASICloud requests passed: confirmation score `0.95`,
   canonical execution-request signal `0.85`, and command response `()`.

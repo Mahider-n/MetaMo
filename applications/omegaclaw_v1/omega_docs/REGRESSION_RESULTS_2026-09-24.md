@@ -17,7 +17,7 @@ session-only offline integration.
 These are working-tree results: revisions alone do not reproduce the tested
 sources. The retained summary includes source SHA-256 fingerprints and pre-run
 MetaMo/Core Git status, including the launcher and Core overlays. The harness
-records fingerprints for its resolved imports as well. See `../DEPENDENCIES.md`
+records fingerprints for its resolved imports as well. See `DEPENDENCIES.md`
 for the required workspace layout and the limits of its older pinned baseline.
 
 ## Results
